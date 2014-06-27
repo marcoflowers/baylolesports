@@ -22,13 +22,14 @@ class tournament_page(BaseHandler):
         self.response.write(template.render(self.template_values))
 
 
+
 class index(BaseHandler):
-    def get(self, key):
+    def get(self):
         #query = tournament.query(active=True).order(-tournament.created)
         #for tournament in query.fetch():
         self.login()
             
-        template = JINJA_ENVIRONMENT.get_template('/templates/tournament/index.html')
+        template = JINJA_ENVIRONMENT.get_template('/templates/tournament/drag_drop_example.html')
         self.response.write(template.render(self.template_values))
 
 

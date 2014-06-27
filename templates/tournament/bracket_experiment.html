@@ -3,35 +3,18 @@
 <link rel="stylesheet" type="text/css" href="/static/bracket.css" />
 <script src="/static/js/drag_drop.js"></script>
 <style>
-/* Prevent the text contents of draggable elements from being selectable. */
-[draggable] {
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-    /* Required to make elements draggable in old WebKit */
-    -khtml-user-drag: element;
-    -webkit-user-drag: element;
-}
-.slot {
-    height:28px;
-    width: 150px;
-    float: left;
-    border: 2px solid #666666;
-    background-color: #ccc;
-    margin-right: 5px;
-    text-align: center;
-    cursor: move;
-}
 
-.slot.over {
-    border: 2px dashed #000;
-}
 </style>
-
 {% endblock %}
 {% block content %}
-<div class="tournament4-wrap">
+<div id="slots">
+    <div class="team_pool">
+        <div class="slot" value="" draggable>Team</div>
+        <div class="slot" value="" draggable>Team</div>
+        <div class="slot" value="" draggable>Team</div>
+        <div class="slot" value="" draggable>Team</div>
+    </div>
+    <div class="tournament4-wrap">
         <div class="round3-top winner3">Winner</div>
         <div class="round2-topwrap">
             <div class="round2-top">1-4 winner</div>
@@ -40,8 +23,9 @@
         </div>
         <div class="round2-bottomwrap">
             <div class="round2-bottom">2-3 winner</div>
-            <div class="round1-top" class="slot" draggable><div class="slot" draggable="true">Seed 2</div></div>
+            <div class="round1-top"><div class="slot" draggable="true">Seed 2</div></div>
             <div class="round1-bottom"><div class="slot" draggable="true">Seed 3</div></div>
         </div>
     </div>
+</div>
 {% endblock %}

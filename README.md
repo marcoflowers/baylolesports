@@ -1,4 +1,15 @@
 
+***git***
+    only push a deployable app to master
+    develop should only have changes that are for everyone
+    branch features off of develop
+        git checkout -b feature develop
+    push features as branches while you work on them
+    close features when complete
+        git checkout develop
+        git merge feature
+        git branch -d feature
+        git push origin develop
 
 FOLLOW GOOGLE'S STYLE GUIDE
 

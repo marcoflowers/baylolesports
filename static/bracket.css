@@ -1,7 +1,40 @@
 .tournament4-wrap, .tournament8-wrap, .tournament16-wrap, .tournament32-wrap {
     text-align: center;
+    float:right;
+    margin-left:5em;
 }
 
+.team_pool {
+    border-right: 2px solid #000;
+    float:left;
+}
+    
+/* drag drop -----------------------------------------------------------------*/
+/* Prevent the text contents of draggable elements from being selectable. */
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+}
+.slot {
+    float:center;
+    height:28px;
+    width: 150px;
+    float: left;
+    border: 2px solid #666666;
+    background-color: #ccc;
+    margin-right: 5px;
+    text-align: center;
+    cursor: move;
+}
+
+.slot.over {
+    border: 2px dashed #000;
+}
 /****** round 1 ******/
 .round1-top, .round1-bottom {
     float: left;
