@@ -1,0 +1,34 @@
+{% extends "/templates/base.html" %}
+{% block content %}
+<div class="row" >
+	<div class="col-md-12">
+		<h1 class="text-center">{{team.name}}</h1>
+		<div class="col-md-3 text-center">
+			{% for player_key in team.members %}
+				<div style="padding-bottom:10px;">
+				<button type="button" class="btn btn-default" id="{{loop.index0}}">{{key_object(player_key).name}}</button>
+				</div>
+			{% endfor %}
+		</div>
+		<div class="col-md-9" id="player_results">
+			<div class="panel panel-default">
+  				<div class="panel-body">
+					<h2>{{key_object(team.members[0]).name}}</h2>
+					<img src="http://lkimg.zamimg.com/images/medals/{{rank_to_url(key_object(team.members[0]).division)}}.png"></img>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+$( document ).ready(function() {
+	$("button").click(function(){
+		$(".panel-body").empty();
+		id= $(this).attr("id")
+		members={{keys_objects(team.members)}}
+		console.log(members)
+		$(".panel-body").append("<h2>"+members[id].name+"</h2>")
+	});
+});
+</script>
+{% endblock %}
