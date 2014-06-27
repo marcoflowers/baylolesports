@@ -25,8 +25,9 @@ app = webapp2.WSGIApplication([
     ('/', home.index),
     ('/team/check_summoner_name/(.*)/(.*)', team.check_summoner_name),
     ('/team/new_team', team.new_team),
+    ('/team/get_team/(.*)/(.*)', team.get_team),
     ('/team/(.*)', team.team_page),
-    ('/team/', team.index),
     ('/tournament/(.*)', tournament.tournament_page),
     ('/tournament_index', tournament.index),
+    ('/team', team.index),
 ], debug=True)

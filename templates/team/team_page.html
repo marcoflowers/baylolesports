@@ -2,19 +2,27 @@
 {% block content %}
 <div class="row" >
 	<div class="col-md-12">
-		<h1 class="text-center">{{team.name}}</h1>
+		
 		<div class="col-md-3 text-center">
+			<h1></h1>
+			<h3>Team Members</h3>
+			<div class="list-group">
 			{% for player_key in team.members %}
-				<div style="padding-bottom:10px;">
-				<button type="button" class="btn btn-default" id="{{loop.index0}}">{{key_object(player_key).name}}</button>
-				</div>
+				{% if loop.index0 ==0 %}
+				<a  href="#" class="list-group-item active">{{key_object(player_key).name}}</a>
+				{% else %}
+				<a  href="#" class="list-group-item">{{key_object(player_key).name}}</a>
+				{% endif %}
 			{% endfor %}
+			</div>
 		</div>
 		<div class="col-md-9" id="player_results">
-			<div class="panel panel-default">
+			<h1 class="text-center">{{team.name}}</h1>
+			<div class="panel panel-primary text-center">
   				<div class="panel-body">
 					<h2>{{key_object(team.members[0]).name}}</h2>
-					<img src="http://lkimg.zamimg.com/images/medals/{{rank_to_url(key_object(team.members[0]).division)}}.png"></img>
+					<h4>{{key_object(team.members[0]).division}}</h4>
+					<img style="padding-left:auto;" src="{{rank_to_url(key_object(team.members[0]).division)}}"></img>
 				</div>
 			</div>
 		</div>
@@ -22,12 +30,18 @@
 </div>
 <script>
 $( document ).ready(function() {
-	$("button").click(function(){
-		$(".panel-body").empty();
-		id= $(this).attr("id")
+	$("a.list-group-item").click(function(){
+		$("a.list-group-item").removeClass("active")
+		panel=$(".panel-body")
+		panel.empty();
+		id= $(this).index()
+		$(this).addClass("active");
 		members={{keys_objects(team.members)}}
-		console.log(members)
-		$(".panel-body").append("<h2>"+members[id].name+"</h2>")
+		div_urls={{div_urls}}
+		memeber=members[id]
+		panel.append("<h2>"+memeber.name+"</h2>")
+		panel.append("<h4>"+memeber.division+"</h4>")
+		panel.append("<img style='padding-left:auto;' src="+div_urls[id]+"></img>")
 	});
 });
 </script>

@@ -21,5 +21,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 class index(BaseHandler):
     
 	def get(self):
+		template_values={}
 		template = JINJA_ENVIRONMENT.get_template('/templates/home/index.html')
 		self.response.write(template.render(template_values))

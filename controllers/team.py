@@ -6,12 +6,12 @@ class index(BaseHandler):
     def get(self):
         self.login()
 
-        template_values={}
-        self.render_template('/templates/team/team_page.html', template_values)
+        teams = team.query().fetch(limit=5)
 
-
-        template = JINJA_ENVIRONMENT.get_template('/templates/team/new_team.html')
-        self.response.write(template.render(template_values))
+        template_values={
+        "teams":teams,
+        }
+        self.render_template('/templates/team/index.html', template_values)
 
 
 class team_page(BaseHandler):
@@ -19,8 +19,12 @@ class team_page(BaseHandler):
         self.login()
 
         teamo = team.get_by_id(int(id))
+        div_urls=[]
+        for member in teamo.members:
+            div_urls.append(rank_to_url(key_object(member).division))
         template_values={
-            "team":teamo
+            "team":teamo,
+            "div_urls":json.dumps(div_urls),
         }
 
         self.render_template('/templates/team/team_page.html', template_values)
@@ -69,3 +73,23 @@ class admin_page(BaseHandler):
 class check_summoner_name(BaseHandler):
     def get(self, name, position):
         self.response.out.write(json.dumps({"id":get_sum_id(name), "position":position}));
+
+class get_team(BaseHandler):
+    def get (self, type, input):
+        output={"teams":[]}
+        if(type=="Name"):
+            teams = team.query(team.name==input).fetch()
+            for group in teams:
+                output["teams"].append({"name":group.name, "id":group.key.id()})
+        elif type=="Team Member":
+            all_teams = team.query().fetch()
+            teams=[]
+            for teamo in all_teams:
+                for member in teamo.members:
+                    if(key_object(member).name.lower()==input.lower()):
+                        teams.append(teamo)
+            for group in teams:
+                output["teams"].append({"name":group.name, "id":group.key.id()})
+        else:
+            output["error"]="not_valid"
+        self.response.out.write(json.dumps(output));

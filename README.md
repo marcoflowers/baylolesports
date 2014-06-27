@@ -13,14 +13,14 @@
 
 FOLLOW GOOGLE'S STYLE GUIDE
 
+Style Guide
+Forms col-md-6(offset 3 to be centered)
+Tourney/Team pages(col-md-3(sidebar) and col-md-9(main content))
+Index Pages col-md-6 offset 3
+
 To Do:
 (Everything)
 
-Think up better UI, right now its all white
-
-There has to be some way to put the login()=login and template vals in the parent login class so we don't have to type it for every class(isnt that the point of the parent class)In the child we can just append to the template vals
-^^^^^NO REPEATINGGGG
-    All controllers must extend models.py. Therefore a a template_values in models.py will be in all controllers - Adrian
 
 ***From now on, all template values must be entered as template_values['key'] = value***
 this will let us always have login

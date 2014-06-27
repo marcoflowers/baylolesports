@@ -98,9 +98,9 @@ def rank_to_url(division):
         lowercase=division[0].lower()
         logging.info(lowercase)
         new_rank = lowercase+"_"+rank_switch[division[1]]
-        return new_rank
+        return "http://lkimg.zamimg.com/images/medals/"+new_rank+".png"
     else:
-        return "In Placements"
+        return "http://lkimg.zamimg.com/images/medals/placing.png"
 
 
 

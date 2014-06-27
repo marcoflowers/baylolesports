@@ -1,0 +1,59 @@
+{% extends "/templates/base.html" %}
+{% block content %}
+<div class="col-md-6 col-md-offset-3 text-center">
+	<div class="row" >
+		<h2>Search for a Team</h2>
+		<div class="input-group">
+	      <div class="input-group-btn">
+	        <button id="drop_search_but" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Name</button>
+	        <ul class="dropdown-menu" role="menu">
+	          <li><a id="drop_search" href="#">Team Member</a></li>
+	        </ul>
+	      </div><!-- /btn-group -->
+	      <input type="text" class="form-control">
+	    </div><!-- /input-group -->
+	    <br>
+	    <button id="go_button" type="button" class="btn btn-default">Go</button>
+	</div>
+	<div class="row">
+		<div class="team_results text-center">
+			<br><br>
+			<h3>Teams</h3>
+			<div class="list-group">
+
+				{% for team in teams %}
+  				<a href="/team/{{team.key.id()}}" class="list-group-item">{{team.name}}</a>
+  				<br>
+  				{% endfor %}
+  			</div>
+		</div>
+</div>
+<script>
+$( document ).ready(function() {
+	$("#drop_search").click(function(){
+		var name = $("#drop_search_but").text();
+		$("#drop_search_but").text($(this).text())
+		$(this).text(name)
+	});
+	$("#go_button").click(function(){
+		console.log("go")
+		var type = $("#drop_search_but").text();
+		var input = $("div.input-group input").val()
+		console.log(input)
+		$.ajax({
+		  url: "/team/get_team/"+type+"/"+input,
+		  dataType: 'json',
+		  success: function(data) {
+		  	$(".team_results .list-group").empty()
+		  	teams= data.teams
+		  	for(var i =0;i<teams.length;i=i+1)
+		  	{
+		  		$(".team_results .list-group").append("<a href='/team/"+teams[i].id+"' class='list-group-item'>"+teams[i].name+"</a>")
+		  	}
+		  }
+		  
+		});
+	});
+});
+</script>
+{% endblock %}
