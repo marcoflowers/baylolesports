@@ -9,23 +9,27 @@
 {% block content %}
 <div id="slots">
     <div class="team_pool">
-        <div class="slot" value="" draggable>Team</div>
-        <div class="slot" value="" draggable>Team</div>
-        <div class="slot" value="" draggable>Team</div>
-        <div class="slot" value="" draggable>Team</div>
+        <div class="slot" value="1" draggable>Team1</div>
+        <div class="slot" value="2" draggable>Team2</div>
+        <div class="slot" value="3" draggable>Team3</div>
+        <div class="slot" value="4" draggable>Team4</div>
     </div>
     <div class="tournament4-wrap">
         <div class="round3-top winner3">Winner</div>
         <div class="round2-topwrap">
             <div class="round2-top">1-4 winner</div>
-            <div class="round1-top"><div class="slot" draggable="true">Seed 1</div></div>
-            <div class="round1-bottom"><div class="slot" draggable="true">Seed 4</div></div>
+            <div class="round1-top"><div class="slot" value="Seed 1" draggable>Seed 1</div></div>
+            <div class="round1-bottom"><div class="slot" value="Seed 4" draggable>Seed 4</div></div>
         </div>
         <div class="round2-bottomwrap">
             <div class="round2-bottom">2-3 winner</div>
-            <div class="round1-top"><div class="slot" draggable="true">Seed 2</div></div>
-            <div class="round1-bottom"><div class="slot" draggable="true">Seed 3</div></div>
+            <div class="round1-top"><div class="slot" value="Seed 2" draggable>Seed 2</div></div>
+            <div class="round1-bottom"><div class="slot" value="Seed 3" draggable>Seed 3</div></div>
         </div>
     </div>
+</div>
+<div class="buttons">
+    <button class="save" onclick="save()">Save</button><br>
+    <button class="finalize" onclick="finalize()">Finalize</button><br>
 </div>
 {% endblock %}

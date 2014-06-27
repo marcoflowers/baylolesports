@@ -22,6 +22,11 @@ class tournament_page(BaseHandler):
         self.response.write(template.render(self.template_values))
 
 
+    def post(self, ukey):
+        logging.info("Data Saved")
+        self.redirect(self.request.uri)
+
+
 
 class index(BaseHandler):
     def get(self):

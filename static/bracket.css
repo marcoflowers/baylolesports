@@ -1,14 +1,20 @@
 .tournament4-wrap, .tournament8-wrap, .tournament16-wrap, .tournament32-wrap {
     text-align: center;
     float:right;
-    margin-left:5em;
+    margin-left:2em;
 }
 
 .team_pool {
     border-right: 2px solid #000;
     float:left;
 }
-    
+.team_pool div {
+    float:left;
+    clear:left;
+    margin-bottom:10px;
+    margin-right:2em;
+}
+
 /* drag drop -----------------------------------------------------------------*/
 /* Prevent the text contents of draggable elements from being selectable. */
 [draggable] {
@@ -21,13 +27,12 @@
     -webkit-user-drag: element;
 }
 .slot {
-    float:center;
-    height:28px;
-    width: 150px;
+    height:25px;
+    width: 100px;
+    line-height:25px;
     float: left;
     border: 2px solid #666666;
     background-color: #ccc;
-    margin-right: 5px;
     text-align: center;
     cursor: move;
 }
