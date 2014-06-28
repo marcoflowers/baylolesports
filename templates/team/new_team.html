@@ -8,6 +8,7 @@
 		  <div class="form-group">
 		    <label for="team_name">Team Name</label>
 		    <input type="text" class="form-control" name="team_name" id="team_name" placeholder="Enter Team Name">
+
 		  </div>
 		  {% for x in range(0,7) %}
 		  <div class="form-group" id="{{loop.index}}">
@@ -15,6 +16,10 @@
 		    <input type="text"  class="form-control" name="player{{loop.index}}" id="player{{loop.index}}" placeholder="Enter Summoner Name">
 		  </div>
 		  {% endfor %}
+		  <div class="form-group">
+		  	<label for="admin" class="control-label">Admin</label>
+		  	<input name="admin" class="form-control" type="text" placeholder="{{user.email()}}" readonly>
+		  </div>
 		  <button type="submit" class="btn btn-default" data-loading-text="Disabled">Submit</button>
 		</form>
 	</div>

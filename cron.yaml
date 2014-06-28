@@ -1,0 +1,4 @@
+cron:
+- description: daily summary job
+  url: /queue/update_stats
+  schedule: every 24 hours

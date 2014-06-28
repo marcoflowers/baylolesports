@@ -32,10 +32,15 @@ class team_page(BaseHandler):
 class new_team(BaseHandler):
     def get(self):
         self.login()
-
-        template_values={}
-        self.render_template('/templates/team/new_team.html', template_values)
+        user = users.get_current_user()
+        if user:
+            template_values={}
+            self.render_template('/templates/team/new_team.html', template_values)
+        else:
+            self.redirect(get_login_url("/team/new_team"))
+        
     def post(self):
+        user = users.get_current_user()
         team_name=self.request.get("team_name")
         player_names=[]
         #get player names
@@ -56,7 +61,7 @@ class new_team(BaseHandler):
             else:
                 new_player=player(name=player_name, id=int(sum_id), division=summoner_rank)
                 player_keys.append(new_player.put())
-        new_team = team(name=team_name,members=player_keys )
+        new_team = team(name=team_name,members=player_keys,admin=user)
         new_team_key = new_team.put()
         self.redirect("/team/"+str(new_team_key.id()))
 
@@ -92,4 +97,4 @@ class get_team(BaseHandler):
                 output["teams"].append({"name":group.name, "id":group.key.id()})
         else:
             output["error"]="not_valid"
-        self.response.out.write(json.dumps(output));
+        self.response.out.write(json.dumps(output))

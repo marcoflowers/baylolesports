@@ -18,8 +18,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 class BaseHandler(webapp2.RequestHandler):
 	def render_template(self, file_name, params={}):
 		params.update(self.template_values)
-		logging.info("HELLOOOOO")
-		logging.info(params)
 		template = JINJA_ENVIRONMENT.get_template(file_name)
 		self.response.write(template.render(params))
 
@@ -27,12 +25,14 @@ class BaseHandler(webapp2.RequestHandler):
 		user = users.get_current_user()
 		if user:
 		    message = user.nickname()
-		    url = users.create_logout_url()
+		    url = users.create_logout_url(self.request.uri)
 		    url_text = "Logout"
 		else:
 		    message = ''
-		    url = users.create_login_url()
+		    url = users.create_login_url(self.request.uri)
 		    url_text = "Login"
+		self.user=user
+		
 
 
 		self.template_values = {
@@ -42,4 +42,7 @@ class BaseHandler(webapp2.RequestHandler):
 		    'key_object':key_object,
 		    'keys_objects':keys_objects,
 		    'rank_to_url':rank_to_url,
+		    'get_login_url':get_login_url
 		}
+		if user:
+			self.template_values["user"]=user

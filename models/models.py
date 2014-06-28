@@ -28,15 +28,18 @@ class tournament(ndb.Model): #by no means final
     teams = ndb.KeyProperty(repeated=True)
     size = ndb.IntegerProperty()
 
+class player_stats(ndb.Model):
+    ranked_stats = ndb.JsonProperty()
 
 
 
+def get_login_url(endpage):
+     return users.create_login_url(endpage)
 
 def get_summoner_rank(summoner_id):
     api_key="655fefc4-c614-420f-895c-893e2c8b9aee"
     try:
         url = 'https://na.api.pvp.net/api/lol/na/v2.4/league/by-summoner/' + str(summoner_id) + '?api_key=' + api_key
-        logging.info(url)
         result = json.loads(urllib2.urlopen(url).read())
         for queue in result[str(summoner_id)]:
             if queue["queue"]=="RANKED_SOLO_5x5":
@@ -46,6 +49,9 @@ def get_summoner_rank(summoner_id):
                         number = entry['division']
                         rank = tier.title() + ' ' + number
         return rank
+    except urllib2.URLError, e:
+        print 'you got an error with the code', e
+        return 'Unranked'
     except:
         return 'Unranked'
 
@@ -78,15 +84,16 @@ def keys_objects(keys):
 
 def get_sum_id(sum_name):
     api_key="655fefc4-c614-420f-895c-893e2c8b9aee"
-    logging.error("start")
     #take out spaces and make lower case
     sum_name_unspaced = sum_name.replace(" ", "").lower()
     try:
         #query riot
         url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/"+sum_name_unspaced+"?api_key="+api_key
-        logging.error(url)
         result = json.loads(urllib2.urlopen(url).read())
         return result[sum_name_unspaced]['id']
+    except urllib2.URLError, e:
+        print 'you got an error with the code', e
+        return False
     except:
         return False
     #return the summoner_id
@@ -96,7 +103,6 @@ def rank_to_url(division):
     if division != "Unranked":
         division = division.split(" ")
         lowercase=division[0].lower()
-        logging.info(lowercase)
         new_rank = lowercase+"_"+rank_switch[division[1]]
         return "http://lkimg.zamimg.com/images/medals/"+new_rank+".png"
     else:

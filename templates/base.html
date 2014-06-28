@@ -36,6 +36,7 @@
             <li><a href="#">Another action</a></li>
           </ul>
         </li>
+        <li><a href="{{url}}">{{url_text}}</a> </li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container -->
@@ -48,5 +49,40 @@
    
     <script src="/static/boostrap/js/boostrap.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <div class="modal fade" id="must_be_logged_in_modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content text-center">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Restricted</h4>
+      </div>
+      <div class="modal-body">
+       <h5>You must be logged in to access this page</h5>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <a type ='button' class='btn btn-primary btn-sm' href="{{get_login_url("/team/new_team")}}">Login</a>
+
+      </div>
+    </div>
+    
+  </div>
+</div>
   </body>
+  <script>
+  $( document ).ready(function() {
+    $("a").click(function(e){
+      if($(this).attr("href").toString()=="/team/new_team")
+      {
+        if("{{url_text}}"=="Login")
+        {
+          e.preventDefault();
+          $('#must_be_logged_in_modal').modal("show")
+        }
+        
+      }
+    })
+  });
+  </script>
 </html>

@@ -17,7 +17,7 @@ from google.appengine.api import mail
 import logging
 import time
 
-from controllers import home, team, tournament
+from controllers import home, team, tournament, queue
 
 
 
@@ -30,4 +30,6 @@ app = webapp2.WSGIApplication([
     ('/tournament/(.*)', tournament.tournament_page),
     ('/tournament_index', tournament.index),
     ('/team', team.index),
+    ('/queue/update_stats', queue.update_stats),
+    ('/queue/player_stats', queue.player_stats_handler),
 ], debug=True)
