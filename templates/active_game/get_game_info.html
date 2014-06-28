@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<head>
+<script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/static/js/get_live_game.js"></script>
+<style>
+body{background:#333;font-family:Arial;color:#eee;}
+input,button,select{padding:5px;font-size:20px;}
+label,h1,h2, #timeUm, #timeDois{text-align:center;display:block;}
+h1{font-size:50px;font-weight:bold;text-shadow: -1px -1px 1px rgba(0,0,0,0.5);}
+h2 strong{color: #6C0;}
+#timeUm, #timeDois{clear:both;}
+#timeUm .summoner{background-color: #06a;background: -webkit-gradient(linear,0% 0,0% 100%,color-stop(0,#06a),color-stop(1.0,#00416d));}
+#timeDois .summoner{background-color: #B31262;background: -webkit-gradient(linear,0% 0,0% 100%,color-stop(0,#B31262),color-stop(1.0,#6D0E2E));}
+.summoner{position:relative; text-decoration:none; background-position: 355px 0; padding:10px; border-radius:5px; width:200px; height:150px; overflow:hidden; margin:2px; display: inline-block;}
+.champ{width:30px;height:30px;float:left;margin-right:10px;position:relative;}
+.summoner *{color:#fff; text-shadow: 0 0 10px rgba(0,0,0,0.5), 0 0 10px rgba(0,0,0,0.5), 0 0 10px rgba(0,0,0,0.5);}
+.summoner h3{margin:0;text-align: left;}
+.summoner h3{font-size:25px;white-space: nowrap;text-overflow: ellipsis;}
+.summoner h4{font-size: 12px;clear: both;margin: 0;}
+.summoner ul{list-style:none;margin:5px;padding:0;}
+.summoner li{float:left;text-align:center;width:33%;}
+.summoner strong{display:inline-block;display:block;}
+.summoner li span{color:green;display:block;font-size:20px;}
+.summoner li span + span{color:red;display:none;}
+.summoner .percent{color:#fff;font-size:13px;margin-top:-15px;font-weight:bold;}
+.summoner .vit{margin-top:15px;}
+.summoner .champ .percent{position:absolute;margin-top:20px;right:-5px;}
+.grande .vitorias{font-size:23px;font-weight:bold;color: #6C0;}
+#server{width:90px;}
+
+.league{position:absolute;right:5px;top:0;width:50px;height:50px; -webkit-background-size: 100% 100%;background-size:100% 100%;}
+.league span{position:absolute;bottom:0;right:0;font-size:20px;font-weight:bold;}
+
+.league.BRONZE{background-image: url(http://lkimg.zamimg.com/images/medals/bronze_1.png);}
+.league.SILVER{background-image: url(http://lkimg.zamimg.com/images/medals/silver_1.png);}
+.league.GOLD{background-image: url(http://lkimg.zamimg.com/images/medals/gold_1.png);}
+.league.PLATINUM{background-image: url(http://lkimg.zamimg.com/images/medals/platinum_1.png);}
+.league.DIAMOND{background-image: url(http://lkimg.zamimg.com/images/medals/diamond_1.png);}
+.league.CHALLENGER{background-image: url(http://lkimg.zamimg.com/images/medals/challenger_1.png);}
+</style>
+</head>
+<body>
+<h1>Game in Progress</h1>
+<label>
+  <input type="text" name="nome" id="nome" placeholder="Summoner Name" />
+  <select id="server" name="server" title="Server">
+    <option value="EUW">EUW</option>
+    <option value="EUNE">EUNE</option>
+    <option value="NA">NA</option>
+    <option value="TR">TR</option>
+    <option value="RU">RU</option>
+    <option value="OCE">OCE</option>
+    <option value="LES">LES</option>
+    <option value="LAN">LAN</option>
+    <option value="BR" selected>BR</option>
+  </select>
+  <button onclick="executar()">Search</button>
+</label>
+    <div id="timeUm"></div>
+    <div id="timeDois"></div>
+</body>
+</html>
+
