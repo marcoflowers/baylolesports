@@ -1,152 +1,31 @@
 {% extends "/templates/base.html" %}
-
 {% block head %}
 <link rel="stylesheet" type="text/css" href="/static/bracket.css" />
+<script src="/static/js/drag_drop.js"></script>
 {% endblock %}
-
-
 {% block content %}
+<div id="slots">
+    <div class="team_pool" value="0">
+        <div class="slot" value="1" draggable>Team1</div><!--replace all of values with team key-->
+        <div class="slot" value="2" draggable>Team2</div>
+        <div class="slot" value="3" draggable>Team3</div>
+        <div class="slot" value="4" draggable>Team4</div>
+    </div>
     <div class="tournament4-wrap">
         <div class="round3-top winner3">Winner</div>
         <div class="round2-topwrap">
             <div class="round2-top">1-4 winner</div>
-            <div class="round1-top"><div class="slot" draggable="true"><header>Seed 1</header></div></div>
-            <div class="round1-bottom"><div class="slot" draggable="true"><header>Seed 4</header></div></div>
+            <div class="round1-top" value="1"><div class="slot" value="Seed 1" draggable>Seed 1</div></div>
+            <div class="round1-bottom" value="2"><div class="slot" value="Seed 4" draggable>Seed 4</div></div>
         </div>
         <div class="round2-bottomwrap">
             <div class="round2-bottom">2-3 winner</div>
-            <div class="round1-top"><div class="slot" draggable="true"><header>Seed 4</header></div></div>
-            <div class="round1-bottom"><div class="slot" draggable="true"><header>Seed 4</header></div></div>
+            <div class="round1-top" value="3"><div class="slot" value="Seed 2" draggable>Seed 2</div></div>
+            <div class="round1-bottom" value="4"><div class="slot" value="Seed 3" draggable>Seed 3</div></div>
         </div>
     </div>
-<style>
-/* Prevent the text contents of draggable elements from being selectable. */
-[draggable] {
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  /* Required to make elements draggable in old WebKit */
-  -khtml-user-drag: element;
-  -webkit-user-drag: element;
-}
-.slot {
-  <!--height: 150px;
-  width: 150px;-->
-  float: left;
-  border: 2px solid #666666;
-  background-color: #ccc;
-  margin-right: 5px;
-  -webkit-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 3px #000;
-  -ms-box-shadow: inset 0 0 3px #000;
-  box-shadow: inset 0 0 3px #000;
-  text-align: center;
-  cursor: move;
-}
-.slot header {
-  color: #fff;
-  text-shadow: #000 0 1px;
-  box-shadow: 5px;
-  padding: 5px;
-  background: -moz-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
-  background: -webkit-gradient(linear, left top, right top,
-                               color-stop(0, rgb(0,0,0)),
-                               color-stop(0.50, rgb(79,79,79)),
-                               color-stop(1, rgb(21,21,21)));
-  background: -webkit-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
-  background: -ms-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
-  border-bottom: 1px solid #ddd;
-  -webkit-border-top-left-radius: 10px;
-  -moz-border-radius-topleft: 10px;
-  -ms-border-radius-topleft: 10px;
-  border-top-left-radius: 10px;
-  -webkit-border-top-right-radius: 10px;
-  -ms-border-top-right-radius: 10px;
-  -moz-border-radius-topright: 10px;
-  border-top-right-radius: 10px;
-}
-.slot.over {
-  border: 2px dashed #000;
-}
-</style>
-<script>
-
-
-function handleDragStart(e) {
-  this.style.opacity = '0.4';  // this / e.target is the source node.
-}
-
-function handleDragOver(e) {
-  if (e.preventDefault) {
-    e.preventDefault(); // Necessary. Allows us to drop.
-  }
-
-  e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
-
-  return false;
-}
-
-function handleDragEnter(e) {
-  // this / e.target is the current hover target.
-  this.classList.add('over');
-}
-
-function handleDragLeave(e) {
-  this.classList.remove('over');  // this / e.target is previous target element.
-}
-
-
-
-function handleDragEnd(e) {
-  // this/e.target is the source node.
-  this.style.opacity = '1.0';
-
-  [].forEach.call(slots, function (slot) {
-    slot.classList.remove('over');
-  });
-}
-
-
-var dragSrcEl = null;
-
-function handleDragStart(e) {
-  // Target (this) element is the source node.
-  this.style.opacity = '0.4';
-
-  dragSrcEl = this;
-
-  e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/html', this.innerHTML);
-}
-function handleDrop(e) {
-  // this/e.target is current target element.
-
-  if (e.stopPropagation) {
-    e.stopPropagation(); // Stops some browsers from redirecting.
-  }
-
-  // Don't do anything if dropping the same slot we're dragging.
-  if (dragSrcEl != this) {
-    // Set the source slot's HTML to the HTML of the slot we dropped on.
-    dragSrcEl.innerHTML = this.innerHTML;
-    this.innerHTML = e.dataTransfer.getData('text/html');
-  }
-
-  return false;
-}
-var slots = document.querySelectorAll('#slots .slot');
-[].forEach.call(slots, function(slot) {
-  slot.addEventListener('dragstart', handleDragStart, false);
-  slot.addEventListener('dragenter', handleDragEnter, false)
-  slot.addEventListener('dragover', handleDragOver, false);
-  slot.addEventListener('dragleave', handleDragLeave, false);
-  slot.addEventListener('drop', handleDrop, false);
-  slot.addEventListener('dragend', handleDragEnd, false);
-});
-</script>
-
+</div>
+<div class="buttons">
+    <button class="save" onclick="save()">Save</button><br>
+</div>
 {% endblock %}

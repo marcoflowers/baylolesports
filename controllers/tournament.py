@@ -17,9 +17,11 @@ class tournament_page(BaseHandler):
         self.login()
         #key = to_key(ukey)
         #tournament = key_object(key)
-        #template = JINJA_ENVIRONMENT.get_template('/templates/tournament/bracket_%s.html' % tournament.size)
-        template = JINJA_ENVIRONMENT.get_template('/templates/tournament/bracket_experiment.html')
+        size = 8
+        template = JINJA_ENVIRONMENT.get_template('/templates/tournament/bracket_%s.html' % size)
         self.response.write(template.render(self.template_values))
+
+           
 
 
     def post(self, ukey):

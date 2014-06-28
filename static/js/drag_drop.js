@@ -74,15 +74,12 @@ function save() {
     var slots = $("#slots .slot");
     data = {};
     [].forEach.call(slots, function(slot) {
-        console.log($(slot).parents().attr("class"));
+        console.log($(slot).parents().attr("value"));
         console.log($(slot).text());
     });
     $.post(document.URL, data, function() {
+        console.log("Success");
     });
-}
-
-function finalize() {
-
 }
 
 
