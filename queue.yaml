@@ -1,7 +1,7 @@
 # Set the total storage limit for all queues to 120MB
 total_storage_limit: 120M
 queue:
-- name: pstats
+- name: riot
   rate: 1/s
   bucket_size: 1
   #max_concurrent_requests: 10

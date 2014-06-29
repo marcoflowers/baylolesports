@@ -21,8 +21,12 @@
 			<div class="panel panel-primary text-center">
   				<div class="panel-body">
 					<h2>{{key_object(team.members[0]).name}}</h2>
+					{% if team.members[0].division != "empty" %}
 					<h4>{{key_object(team.members[0]).division}}</h4>
 					<img style="padding-left:auto;" src="{{rank_to_url(key_object(team.members[0]).division)}}"></img>
+					{% else %}
+					<h4>Fetching Division</h4>
+					{% endif %}
 				</div>
 			</div>
 		</div>
@@ -40,8 +44,15 @@ $( document ).ready(function() {
 		div_urls={{div_urls}}
 		memeber=members[id]
 		panel.append("<h2>"+memeber.name+"</h2>")
-		panel.append("<h4>"+memeber.division+"</h4>")
-		panel.append("<img style='padding-left:auto;' src="+div_urls[id]+"></img>")
+		if(memeber.division!="empty")
+		{
+			panel.append("<h4>"+memeber.division+"</h4>")
+			panel.append("<img style='padding-left:auto;' src="+div_urls[id]+"></img>")
+		}
+		else
+		{
+			panel.append("<h4>Fetching Division</h4>")
+		}
 	});
 });
 </script>

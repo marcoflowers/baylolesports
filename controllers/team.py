@@ -48,21 +48,7 @@ class new_team(BaseHandler):
             name=self.request.get("player"+str(x))
             if name !="":
                 player_names.append(name)
-        player_keys=[]
-        for player_name in player_names:
-            sum_id = get_sum_id(player_name)
-            summoner_rank=get_summoner_rank(sum_id)
-            try:
-                oldplayer = player.get_by_id(sum_id)
-            except:
-                oldplayer = False
-            if(oldplayer):
-                player_keys.append(oldplayer.key)
-            else:
-                new_player=player(name=player_name, id=int(sum_id), division=summoner_rank)
-                player_keys.append(new_player.put())
-        new_team = team(name=team_name,members=player_keys,admin=user)
-        new_team_key = new_team.put()
+        new_team_key=create_team_players(user, player_names, team_name)
         self.redirect("/team/"+str(new_team_key.id()))
 
 
@@ -77,6 +63,7 @@ class admin_page(BaseHandler):
 
 class check_summoner_name(BaseHandler):
     def get(self, name, position):
+        logging.info("check_summoner_name")
         self.response.out.write(json.dumps({"id":get_sum_id(name), "position":position}));
 
 class get_team(BaseHandler):
@@ -98,3 +85,7 @@ class get_team(BaseHandler):
         else:
             output["error"]="not_valid"
         self.response.out.write(json.dumps(output))
+class check_team_name_handler(BaseHandler):
+    def get(self, name):
+        logging.info(check_name_team(name))
+        self.response.out.write(json.dumps({"name":check_name_team(name)}));

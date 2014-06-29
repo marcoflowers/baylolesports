@@ -5,6 +5,8 @@ import json
 import urllib
 import urllib2
 import time
+from google.appengine.api import taskqueue
+import datetime
 
 
 class team(ndb.Model): #don't touch
@@ -36,24 +38,7 @@ class player_stats(ndb.Model):
 def get_login_url(endpage):
      return users.create_login_url(endpage)
 
-def get_summoner_rank(summoner_id):
-    api_key="655fefc4-c614-420f-895c-893e2c8b9aee"
-    try:
-        url = 'https://na.api.pvp.net/api/lol/na/v2.4/league/by-summoner/' + str(summoner_id) + '?api_key=' + api_key
-        result = json.loads(urllib2.urlopen(url).read())
-        for queue in result[str(summoner_id)]:
-            if queue["queue"]=="RANKED_SOLO_5x5":
-                tier = queue["tier"]
-                for entry in queue["entries"]:
-                    if entry['playerOrTeamId'] == str(summoner_id):
-                        number = entry['division']
-                        rank = tier.title() + ' ' + number
-        return rank
-    except urllib2.URLError, e:
-        print 'you got an error with the code', e
-        return 'Unranked'
-    except:
-        return 'Unranked'
+
 
 
 def new_team(name, admin, members):
@@ -92,13 +77,23 @@ def get_sum_id(sum_name):
         result = json.loads(urllib2.urlopen(url).read())
         return result[sum_name_unspaced]['id']
     except urllib2.URLError, e:
+        logging.info(e.code)
+        if e.code == "429":
+            logging.info("sleep")
+            time.sleep(5)
+            get_sum_id(sum_name)
+        else:
+            return False
         print 'you got an error with the code', e
-        return False
+        
+        
     except:
         return False
     #return the summoner_id
     
 def rank_to_url(division):
+    if division=="empty":
+        return ""
     rank_switch = {"I":"1","II":"2","III":"3","IV":"4","V":"5"}
     if division != "Unranked":
         division = division.split(" ")
@@ -109,4 +104,31 @@ def rank_to_url(division):
         return "http://lkimg.zamimg.com/images/medals/placing.png"
 
 
+def create_team_players(user, player_names, team_name):
+    player_keys=[]
+    for player_name in player_names:
+        sum_id = get_sum_id(player_name)
+        logging.info("gotdata")
+        try:
+            oldplayer = player.get_by_id(sum_id)
+        except:
+            oldplayer = False
+        if(oldplayer):
+            player_keys.append(oldplayer.key)
+        else:
+            new_player=player(name=player_name, id=int(sum_id), division="empty")
+            player_key=new_player.put()
+            player_keys.append(player_key)
+            taskqueue.add(countdown=20,name="player"+str(player_key.id())+str(datetime.date.today()), queue_name="riot", url='/queue/player_stats', params={'id': player_key.id()})
+    new_team = team(name=team_name,members=player_keys,admin=user)
+    new_team_key = new_team.put()
+    return new_team_key
+
+def check_name_team(team_name):
+    query = team.query(team.name==team_name).fetch()
+    logging.info(len(query))
+    if(len(query)>0):
+        return False
+    else:
+        return True
 
