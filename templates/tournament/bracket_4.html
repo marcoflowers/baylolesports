@@ -8,12 +8,13 @@
     <div class="row" id="slots">
         <div class="col-md-2" value="0">
             <div class="team_pool">
-            {# for team in tournament.teams %}
-            <div class="slot" draggable value={{get_ukey(team)}}>{{team.name}}</div>
-            {% endfor #}
-            {% for team in range(4) %}
-            <div class="slot" value="{{team+1}}" draggable>Team {{team+1}}</div>
-            {% endfor %}
+                <p>Available Teams<p>
+                {# for team in tournament.teams %}
+                <div class="slot" draggable value={{get_ukey(team)}}>{{team.name}}</div>
+                {% endfor #}
+                {% for team in range(4) %}
+                <div class="slot" value="{{team+1}}" draggable>Team {{team+1}}</div>
+                {% endfor %}
             </div>
         </div>
         <div class="col-md-4">
