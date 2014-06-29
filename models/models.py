@@ -28,6 +28,10 @@ class tournament(ndb.Model): #by no means final
     teams = ndb.KeyProperty(repeated=True)
     size = ndb.IntegerProperty()
 
+class game(ndb.Model):
+    bracket_spot = ndb.IntegerProperty()
+    teams = ndb.KeyProperty(repeated=True)
+
 
 
 
