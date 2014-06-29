@@ -2,30 +2,53 @@
 {% block head %}
 <link rel="stylesheet" type="text/css" href="/static/bracket.css" />
 <script src="/static/js/drag_drop.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
 {% endblock %}
 {% block content %}
-<div id="slots">
-    <div class="team_pool" value="0">
-        <div class="slot" value="1" draggable>Team1</div><!--replace all of values with team key-->
-        <div class="slot" value="2" draggable>Team2</div>
-        <div class="slot" value="3" draggable>Team3</div>
-        <div class="slot" value="4" draggable>Team4</div>
-    </div>
-    <div class="tournament4-wrap">
-        <div class="round3-top winner3">Winner</div>
-        <div class="round2-topwrap">
-            <div class="round2-top">1-4 winner</div>
-            <div class="round1-top" value="1"><div class="slot" value="Seed 1" draggable>Seed 1</div></div>
-            <div class="round1-bottom" value="2"><div class="slot" value="Seed 4" draggable>Seed 4</div></div>
+<div id="content">
+    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+        <li class="active"><a href="#tab1" data-toggle="tab">Bracket</a></li>
+        <li><a href="#tab2" data-toggle="tab">Tab 2</a></li>
+    </ul>
+    <div id="my-tab-content" class="tab-content" style="border:1px solid">
+        <div class="tab-pane active" id="tab1" >
+            <div id="slots">
+                <div class="team_pool" value="0">
+                    <div class="slot" value="1" draggable>Team1</div><!--replace all of values with team key-->
+                    <div class="slot" value="2" draggable>Team2</div>
+                    <div class="slot" value="3" draggable>Team3</div>
+                    <div class="slot" value="4" draggable>Team4</div>
+                </div>
+                <div class="tournament4-wrap">
+                    <div class="round3-top winner3">Winner</div>
+                    <div class="round2-topwrap">
+                        <div class="round2-top">1-4 winner</div>
+                        <div class="round1-top" value="1"><div class="slot" value="Seed 1" draggable>Seed 1</div></div>
+                        <div class="round1-bottom" value="2"><div class="slot" value="Seed 4" draggable>Seed 4</div></div>
+                    </div>
+                    <div class="round2-bottomwrap">
+                        <div class="round2-bottom">2-3 winner</div>
+                        <div class="round1-top" value="3"><div class="slot" value="Seed 2" draggable>Seed 2</div></div>
+                        <div class="round1-bottom" value="4"><div class="slot" value="Seed 3" draggable>Seed 3</div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="save">
+                <button class="save" onclick="save()">Save</button><br>
+            </div>
         </div>
-        <div class="round2-bottomwrap">
-            <div class="round2-bottom">2-3 winner</div>
-            <div class="round1-top" value="3"><div class="slot" value="Seed 2" draggable>Seed 2</div></div>
-            <div class="round1-bottom" value="4"><div class="slot" value="Seed 3" draggable>Seed 3</div></div>
+        <div class="tab-pane" id="tab2">
+            <p>Tab 2</p>
         </div>
     </div>
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+        $('#tabs').tab();
+    });
+</script>    
 </div>
-<div class="buttons">
-    <button class="save" onclick="save()">Save</button><br>
-</div>
+
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-tab.js"></script>
 {% endblock %}

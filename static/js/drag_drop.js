@@ -58,6 +58,7 @@ function handleDrop(e) {
     return false;
 }
 $(document).ready(function() {
+    console.log("Drag drop ready");
     var slots = $("#slots .slot");
     [].forEach.call(slots, function(slot) {
         slot.addEventListener('dragstart', handleDragStart, false);

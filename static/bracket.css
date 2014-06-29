@@ -2,6 +2,15 @@
     text-align: center;
     float:right;
     margin-left:2em;
+    width=1000px;
+}
+#save {
+    float:left;
+}
+
+.page-title {
+    text-align:center;
+    height:100px;
 }
 
 .team_pool {
@@ -14,7 +23,9 @@
     margin-bottom:10px;
     margin-right:2em;
 }
-
+#slots {
+    width=100%;
+}
 /* drag drop -----------------------------------------------------------------*/
 /* Prevent the text contents of draggable elements from being selectable. */
 [draggable] {
