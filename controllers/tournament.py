@@ -14,12 +14,10 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 class tournament_page(BaseHandler):
     def get(self, ukey):
-        self.login()
-        #key = to_key(ukey)
+        key = to_key(ukey)
         #tournament = key_object(key)
-        size = ukey
-        template = JINJA_ENVIRONMENT.get_template('/templates/tournament/bracket_%s.html' % size)
-        self.response.write(template.render(self.template_values))
+        #size = ukey
+        #self.render_template('/templates/tournament/bracket_%s.html' % size, template_values)
 
            
 
@@ -33,11 +31,9 @@ class tournament_page(BaseHandler):
 class index(BaseHandler):
     def get(self):
         #query = tournament.query(active=True).order(-tournament.created)
-        #for tournament in query.fetch():
-        self.login()
-            
-        template = JINJA_ENVIRONMENT.get_template('/templates/tournament/drag_drop_example.html')
-        self.response.write(template.render(self.template_values))
+        #template_values = {"tournaments", query.fetch()}
+        template_values={}
+        self.render_template('/templates/tournament/index.html', template_values) 
 
 
 
