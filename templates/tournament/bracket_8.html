@@ -1,63 +1,53 @@
-{% extends "/templates/base.html" %}
-
-{% block head %}
-<link rel="stylesheet" type="text/css" href="/static/bracket.css" />
-<script src="/static/js/drag_drop.js"></script>
-{% endblock %}
+{% extends "/templates/tournament/admin_base.html" %}
 
 
-{% block content %}
-<div id="slots">
-    <div class="team_pool" value="0">
-        {#
-        {% for team in tournament.teams %}
+
+{% block tab_contents %}
+<div class="tab-pane active" id="bracket">
+    <div style="text-align:center"><h1>Bracket</h1></div>
+    <div class="row" id="slots">
+        <div class="col-md-2" value="0">
+            <div class="team_pool">
+            {# for team in tournament.teams %}
             <div class="slot" draggable value={{get_ukey(team)}}>{{team.name}}</div>
-        {% endfor %}
-        #}
-        <div class="slot" value="1" draggable>Team1</div>
-        <div class="slot" value="2" draggable>Team2</div>
-        <div class="slot" value="3" draggable>Team3</div>
-        <div class="slot" value="4" draggable>Team4</div>
-        <div class="slot" value="5" draggable>Team5</div>
-        <div class="slot" value="6" draggable>Team6</div>
-        <div class="slot" value="7" draggable>Team7</div>
-        <div class="slot" value="8" draggable>Team8</div>
-    </div>
-    <div class="tournament8-wrap">
-        <div class="round4-top winner4">Winner</div>
-        <div class="round3-topwrap">
-            <div class="round3-top">Top finalist</div>
-            <div class="round2-topwrap">
-                <div class="round2-top">1-8 winner</div>
-                <div class="round1-top" value="1"><div class="slot" draggable>#1 seed</div></div>
-                <div class="round1-bottom" value="2"><div class="slot" draggable>#8 seed</div></div>
-            </div>
-            <div class="round2-bottomwrap">
-                <div class="round2-bottom">4-5 winner</div>
-                <div class="round1-top" value="3"><div class="slot" draggable>#4 seed</div></div>
-                <div class="round1-bottom" value="4"><div class="slot" draggable>#5 seed</div></div>
+            {% endfor #}
+            {% for team in range(8) %}
+                <div class="slot" value="{{team+1}}" draggable>Team {{team+1}}</div>
+            {% endfor %}
             </div>
         </div>
-        <div class="round3-bottomwrap">
-            <div class="round3-bottom">Bottom finalist</div>
-            <div class="round2-topwrap">
-                <div class="round2-top">2-7 winner</div>
-                <div class="round1-top" value="5"><div class="slot" draggable>#2 seed</div></div>
-                <div class="round1-bottom" value="6"><div class="slot" draggable>#7 seed</div></div>
-            </div>
-            <div class="round2-bottomwrap">
-                <div class="round2-bottom">3-6 winner</div>
-                <div class="round1-top" value="7"><div class="slot" draggable>#3 seed</div></div>
-                <div class="round1-bottom" value="8"><div class="slot" draggable>#6 seed</div></div>
+        <div class="col-md-4">
+            <div class="tournament8-wrap">
+                <div class="round4-top winner4">Winner</div>
+                <div class="round3-topwrap">
+                    <div class="round3-top">Top finalist</div>
+                    <div class="round2-topwrap">
+                        <div class="round2-top">1-8 winner</div>
+                        <div class="round1-top" value="1"><div class="slot" draggable>#1 seed</div></div>
+                        <div class="round1-bottom" value="2"><div class="slot" draggable>#8 seed</div></div>
+                    </div>
+                    <div class="round2-bottomwrap">
+                        <div class="round2-bottom">4-5 winner</div>
+                        <div class="round1-top" value="3"><div class="slot" draggable>#4 seed</div></div>
+                        <div class="round1-bottom" value="4"><div class="slot" draggable>#5 seed</div></div>
+                    </div>
+                </div>
+                <div class="round3-bottomwrap">
+                    <div class="round3-bottom">Bottom finalist</div>
+                    <div class="round2-topwrap">
+                        <div class="round2-top">2-7 winner</div>
+                        <div class="round1-top" value="5"><div class="slot" draggable>#2 seed</div></div>
+                        <div class="round1-bottom" value="6"><div class="slot" draggable>#7 seed</div></div>
+                    </div>
+                    <div class="round2-bottomwrap">
+                        <div class="round2-bottom">3-6 winner</div>
+                        <div class="round1-top" value="7"><div class="slot" draggable>#3 seed</div></div>
+                        <div class="round1-bottom" value="8"><div class="slot" draggable>#6 seed</div></div>
+                    </div>
+                </div>
             </div>
         </div>
-        
     </div>
-    <div id="save">
-        <button class="save" onclick="save()">Save</button><br>
-    </div>       
-
 </div>
-
 
 {% endblock %}

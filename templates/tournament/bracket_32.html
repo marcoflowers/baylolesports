@@ -1,135 +1,154 @@
-{% extends "/templates/base.html" %}
+{% extends "/templates/tournament/admin_base.html" %}
 
-{% block head %}
-<link rel="stylesheet" type="text/css" href="/static/bracket.css" />
-{% endblock %}
-
-
-{% block content %}
-
-    <div class="tournament32-wrap">
-        <div class="round6-top winner6">Winner</div>
-        <div class="round5-topwrap">
-            <div class="round5-top">Top Winner</div>
-            <div class="round4-topwrap">
-                <div class="round4-top">1/8 winner</div>
-                <div class="round3-topwrap">
-                    <div class="round3-top">1/16 winner</div>
-                    <div class="round2-topwrap">
-                        <div class="round2-top">1-32 winner</div>
-                        <div class="round1-top">#1 seed</div>
-                        <div class="round1-bottom">#32 seed</div>
-                    </div>
-                    <div class="round2-bottomwrap">
-                        <div class="round2-bottom">16-17 winner</div>
-                        <div class="round1-top">#16 seed</div>
-                        <div class="round1-bottom">#17 seed</div>
-                    </div>
-                </div>
-                <div class="round3-bottomwrap">
-                    <div class="round3-bottom">8/9 winner</div>
-                    <div class="round2-topwrap">
-                        <div class="round2-top">8-25 winner</div>
-                        <div class="round1-top">#8 seed</div>
-                        <div class="round1-bottom">#25 seed</div>
-                    </div>
-                    <div class="round2-bottomwrap">
-                        <div class="round2-bottom">9-24 winner</div>
-                        <div class="round1-top">#9 seed</div>
-                        <div class="round1-bottom">#24 seed</div>
-                    </div>
-                </div>
-            </div>
-            <div class="round4-bottomwrap">
-                <div class="round4-bottom">4/5 winner</div>
-                <div class="round3-topwrap">
-                    <div class="round3-top">4/13 winner</div>
-                    <div class="round2-topwrap">
-                        <div class="round2-top">4-29 winner</div>
-                        <div class="round1-top">#4 seed</div>
-                        <div class="round1-bottom">#29 seed</div>
-                    </div>
-                    <div class="round2-bottomwrap">
-                        <div class="round2-bottom">13-20 winner</div>
-                        <div class="round1-top">#13 seed</div>
-                        <div class="round1-bottom">#20 seed</div>
-                    </div>
-                </div>
-                <div class="round3-bottomwrap">
-                    <div class="round3-bottom">5/12 winner</div>
-                    <div class="round2-topwrap">
-                        <div class="round2-top">5-28 winner</div>
-                        <div class="round1-top">#5 seed</div>
-                        <div class="round1-bottom">#28 seed</div>
-                    </div>
-                    <div class="round2-bottomwrap">
-                        <div class="round2-bottom">12-21 winner</div>
-                        <div class="round1-top">#12 seed</div>
-                        <div class="round1-bottom">#21 seed</div>
-                    </div>
-                </div>
+{% block tab_contents %}
+<div class="tab-pane active" id="bracket">
+    <div style="text-align:center"><h1>Bracket</h1></div>
+    <div class="row" id="slots">
+        <div class="col-md-2" value="0">
+            <div class="team_pool">
+            {# for team in tournament.teams %}
+            <div class="slot" draggable value={{get_ukey(team)}}>{{team.name}}</div>
+            {% endfor #}
+            {% for team in range(32) %}
+            <div class="slot" value="{{team+1}}" draggable>Team {{team+1}}</div>
+            {% endfor %}
             </div>
         </div>
-        <div class="round5-bottomwrap">
-            <div class="round5-bottom">Bottom Winner</div>
-            <div class="round4-topwrap">
-                <div class="round4-top">2/7 winner</div>
-                <div class="round3-topwrap">
-                    <div class="round3-top">2/15 winner</div>
-                    <div class="round2-topwrap">
-                        <div class="round2-top">2-31 winner</div>
-                        <div class="round1-top">#2 seed</div>
-                        <div class="round1-bottom">#31 seed</div>
+        <div class="col-md-4">
+            <div class="tournament32-wrap">
+                <div class="round6-top winner6">Winner</div>
+                <div class="round5-topwrap">
+                    <div class="round5-top">Top Winner</div>
+                    <div class="round4-topwrap">
+                        <div class="round4-top">1/8 winner</div>
+                        <div class="round3-topwrap">
+                            <div class="round3-top">1/16 winner</div>
+                            <div class="round2-topwrap">
+                                <div class="round2-top">1-32 winner</div>
+                                <div class="round1-top" value="1"><div class="slot" draggable>#1 seed</div></div>
+                                <div class="round1-bottom" value="2"><div class="slot" draggable>#32 seed</div></div>
+                            </div>
+                            <div class="round2-bottomwrap">
+                                <div class="round2-bottom">16-17 winner</div>
+                                <div class="round1-top" value="3"><div class="slot" draggable>#16 seed</div></div>
+                                <div class="round1-bottom" value="4"><div class="slot" draggable>#17 seed</div></div>
+                            </div>
+                        </div>
+                        <div class="round3-bottomwrap">
+                            <div class="round3-bottom">8/9 winner</div>
+                            <div class="round2-topwrap">
+                                <div class="round2-top">8-25 winner</div>
+                                <div class="round1-top" value="5"><div class="slot" draggable>#8 seed</div></div>
+                                <div class="round1-bottom" value="6"><div class="slot" draggable>#25 seed</div></div>
+                            </div>
+                            <div class="round2-bottomwrap">
+                                <div class="round2-bottom">9-24 winner</div>
+                                <div class="round1-top" value="7"><div class="slot" draggable>#9 seed</div></div>
+                                <div class="round1-bottom" value="8"><div class="slot" draggable>#24 seed</div></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="round2-bottomwrap">
-                        <div class="round2-bottom">15-18 winner</div>
-                        <div class="round1-top">#15 seed</div>
-                        <div class="round1-bottom">#18 seed</div>
+                    <div class="round4-bottomwrap">
+                        <div class="round4-bottom">4/5 winner</div>
+                        <div class="round3-topwrap">
+                            <div class="round3-top">4/13 winner</div>
+                            <div class="round2-topwrap">
+                                <div class="round2-top">4-29 winner</div>
+                                <div class="round1-top" value="9"><div class="slot" draggable>#4 seed</div></div>
+                                <div class="round1-bottom" value="10"><div class="slot" draggable>#29 seed</div></div>
+                            </div>
+                            <div class="round2-bottomwrap">
+                                <div class="round2-bottom">13-20 winner</div>
+                                <div class="round1-top" value="11"><div class="slot" draggable>#13 seed</div></div>
+                                <div class="round1-bottom" value="12"><div class="slot" draggable>#20 seed</div></div>
+                            </div>
+                        </div>
+                        <div class="round3-bottomwrap">
+                            <div class="round3-bottom">5/12 winner</div>
+                            <div class="round2-topwrap">
+                                <div class="round2-top">5-28 winner</div>
+                                <div class="round1-top" value="13"><div class="slot" draggable>#5 seed</div></div>
+                                <div class="round1-bottom" value="14"><div class="slot" draggable>#28 seed</div></div>
+                            </div>
+                            <div class="round2-bottomwrap">
+                                <div class="round2-bottom">12-21 winner</div>
+                                <div class="round1-top" value="15"><div class="slot" draggable>#12 seed</div></div>
+                                <div class="round1-bottom" value="16"><div class="slot" draggable>#21 seed</div></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="round3-bottomwrap">
-                    <div class="round3-bottom">7/10 winner</div>
-                    <div class="round2-topwrap">
-                        <div class="round2-top">7-26 winner</div>
-                        <div class="round1-top">#7 seed</div>
-                        <div class="round1-bottom">#26 seed</div>
+                <div class="round5-bottomwrap">
+                    <div class="round5-bottom">Bottom Winner</div>
+                    <div class="round4-topwrap">
+                        <div class="round4-top">2/7 winner</div>
+                        <div class="round3-topwrap">
+                            <div class="round3-top">2/15 winner</div>
+                            <div class="round2-topwrap">
+                                <div class="round2-top">2-31 winner</div>
+                                <div class="round1-top" value="17"><div class="slot" draggable>#2 seed</div></div>
+                                <div class="round1-bottom" value="18"><div class="slot" draggable>#31 seed</div></div>
+                            </div>
+                            <div class="round2-bottomwrap">
+                                <div class="round2-bottom">15-18 winner</div>
+                                <div class="round1-top" value="19"><div class="slot" draggable>#15 seed</div></div>
+                                <div class="round1-bottom" value="20"><div class="slot" draggable>#18 seed</div></div>
+                            </div>
+                        </div>
+                        <div class="round3-bottomwrap">
+                            <div class="round3-bottom">7/10 winner</div>
+                            <div class="round2-topwrap">
+                                <div class="round2-top">7-26 winner</div>
+                                <div class="round1-top" value="21"><div class="slot" draggable>#7 seed</div></div>
+                                <div class="round1-bottom" value="22"><div class="slot" draggable>#26 seed</div></div>
+                            </div>
+                            <div class="round2-bottomwrap">
+                                <div class="round2-bottom">10-23 winner</div>
+                                <div class="round1-top" value="23"><div class="slot" draggable>#10 seed</div></div>
+                                <div class="round1-bottom" value="24"><div class="slot" draggable>#23 seed</div></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="round2-bottomwrap">
-                        <div class="round2-bottom">10-23 winner</div>
-                        <div class="round1-top">#10 seed</div>
-                        <div class="round1-bottom">#23 seed</div>
+                    <div class="round4-bottomwrap">
+                        <div class="round4-bottom">3/6 winer</div>
+                        <div class="round3-topwrap">
+                            <div class="round3-top">3/14 winner</div>
+                            <div class="round2-topwrap">
+                                <div class="round2-top">3-30 winner</div>
+                                <div class="round1-top" value="25"><div class="slot" draggable>#3 seed</div></div>
+                                <div class="round1-bottom" value="26"><div class="slot" draggable>#30 seed</div></div>
+                            </div>
+                            <div class="round2-bottomwrap">
+                                <div class="round2-bottom">14-19 winner</div>
+                                <div class="round1-top" value="27"><div class="slot" draggable>#14 seed</div></div>
+                                <div class="round1-bottom" value="28"><div class="slot" draggable>#19 seed</div></div>
+                            </div>
+                        </div>
+                        <div class="round3-bottomwrap">
+                            <div class="round3-bottom">6/11 winner</div>
+                            <div class="round2-topwrap">
+                                <div class="round2-top">6-27 winner</div>
+                                <div class="round1-top" value="29"><div class="slot" draggable>#6 seed</div></div>
+                                <div class="round1-bottom" value="30"><div class="slot" draggable>#27 seed</div></div>
+                            </div>
+                            <div class="round2-bottomwrap">
+                                <div class="round2-bottom">11-22 winner</div>
+                                <div class="round1-top" value="31"><div class="slot" draggable>#11 seed</div></div>
+                                <div class="round1-bottom" value="32"><div class="slot" draggable>#22 seed</div></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="round4-bottomwrap">
-                <div class="round4-bottom">3/6 winer</div>
-                <div class="round3-topwrap">
-                    <div class="round3-top">3/14 winner</div>
-                    <div class="round2-topwrap">
-                        <div class="round2-top">3-30 winner</div>
-                        <div class="round1-top">#3 seed</div>
-                        <div class="round1-bottom">#30 seed</div>
-                    </div>
-                    <div class="round2-bottomwrap">
-                        <div class="round2-bottom">14-19 winner</div>
-                        <div class="round1-top">#14 seed</div>
-                        <div class="round1-bottom">#19 seed</div>
-                    </div>
-                </div>
-                <div class="round3-bottomwrap">
-                    <div class="round3-bottom">6/11 winner</div>
-                    <div class="round2-topwrap">
-                        <div class="round2-top">6-27 winner</div>
-                        <div class="round1-top">#6 seed</div>
-                        <div class="round1-bottom">#27 seed</div>
-                    </div>
-                    <div class="round2-bottomwrap">
-                        <div class="round2-bottom">11-22 winner</div>
-                        <div class="round1-top">#11 seed</div>
-                        <div class="round1-bottom">#22 seed</div>
-                    </div>
-                </div>
+            </div>{#end bracket#}
+            <div id="save">
+                <button class="save" onclick="save()">Save</button><br>
             </div>
         </div>
     </div>
+</div>
+<div class="tab-pane" id="tab2">
+<p>Tab 2</p>
+</div>
+
+
 {% endblock %}

@@ -1,0 +1,36 @@
+{% extends "/templates/base.html" %}
+
+
+{% block head %}
+
+<link rel="stylesheet" type="text/css" href="/static/bracket.css" />
+<script src="/static/js/drag_drop.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-tab.js"></script>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div id="content">
+    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+        <li class="active"><a href="#bracket" data-toggle="tab">Bracket</a></li>
+        <li><a href="#tab2" data-toggle="tab">Tab 2</a></li>
+
+    </ul>
+
+
+    <div class="tab-content" style="border:1px solid">
+        {% block tab_contents %}{% endblock %}
+    </div>
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            $('#tabs').tab();
+        });
+    </script>
+
+
+{% endblock %}
