@@ -50,3 +50,8 @@ teams/
     check_summoner_name(ajax call to make sure the summoner_name is good)
 home/
 	index
+
+Tournament Tasklist
+Create
+Index
+View
