@@ -1,0 +1,113 @@
+{% extends "/templates/base.html" %}
+
+{% block head %}
+
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3" style="border:3px solid">
+        <h2 class="text-center">Create a Tournament</h2>
+        <form role="form" id="new_tournament" method="post">
+            <div class="form-group">
+                <label for="tournament_name">Tournament Name</label>
+                <input type="text" class="form-control" name="tournament_name" id="tournament_name" placeholder="Enter Tournament Name">
+            </div>
+            <div class="form-group">
+                <label for="size" class="control-label">Size</label>
+                <select class="form-control has-success" id="size" name="size">
+                    <option value="0" selected></option>
+                    <option value="4">4</option>
+                    <option value="8">8</option>
+                    <option value="16">16</option>
+                    <option value="32">32</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-default" data-loading-text="Disabled">Submit</button>
+        </form>
+    </div>
+</div>
+<script>
+function checkstatus()
+{
+	var loop = 0
+	$( ".form-group" ).each(function( index ) {
+  	if($(this).hasClass("has-error"))
+  	{
+  		loop=-50
+  	}
+  	else if ($(this).hasClass("has-success"))
+  	{
+  		loop=loop+1
+  	}
+	});
+	if(loop>=2)
+	{
+		$("button").button('reset')
+		return true
+	}
+	else
+	{
+		$("button").button('loading')
+		return false
+	}
+}
+$( document ).ready(function() {
+	$("form").submit(function(){
+		$("button").button('loading')
+	});
+	$("input").focus(function(){
+		$("button").button('loading')
+	});
+	$("button").button('loading')
+        $("select").focusout(function(){
+            $(this).parent().removeClass("has-error");
+            $(this).parent().removeClass("has-success");
+            $(this).parent().children("label").children("small").remove();
+            var size = $(this).val();
+            var select = $("#size")
+            if(size==0) {
+                select.parent().addClass("has-error")
+            }
+            else {
+                select.parent().addClass("has-success")
+            }
+            checkstatus();
+        });
+                
+                
+
+	$("input").focusout(function(){
+		$(this).parent().removeClass("has-error")
+		$(this).parent().removeClass("has-success")
+		$(this).parent().children("label").children("small").remove()
+		var tournament_name = $(this).val();
+		console.log(tournament_name);
+		if(tournament_name.length>0)
+		{
+			var position = $(this).parent().attr('id');
+			$.ajax({
+	        url: '/tournament/check_name/' + tournament_name, 
+	        dataType: 'json',
+	        success: function(data) {
+	        	var input = $("#tournament_name")
+	        	
+	            if(data.id ==false)
+	            {
+	            	input.parent().addClass("has-error")
+	            	input.parent().children("label").append("<small id='tournament-name-error'>Name Already In Use</small>")
+	            }
+	            else
+	            {
+	            	input.parent().addClass("has-success")
+	            }
+	            checkstatus()
+	        }
+		});
+	}
+	});
+});
+</script>
+
+
+
+{% endblock %}

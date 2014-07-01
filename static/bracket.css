@@ -18,6 +18,7 @@
     margin-left:auto;
     margin-right:auto;
 }
+
 /* drag drop -----------------------------------------------------------------*/
 /* Prevent the text contents of draggable elements from being selectable. */
 [draggable] {
@@ -33,14 +34,19 @@
     height:25px;
     width: 100px;
     line-height:25px;
-    border: 2px solid #666666;
-    background-color: #ccc;
+    background-color: #333333;
     text-align: center;
     cursor: move;
+    border-radius:5px;
+    color:#999999;
+    margin-top:2px;
+    border:2px solid transparent;
 }
-
+.slot:hover {
+    border:2px solid #d5a235;
+}
 .slot.over {
-    border: 2px dashed #000;
+    border: 2px dashed #d5a235;
 }
 .tournament4-wrap, .tournament8-wrap, .tournament16-wrap, .tournament32-wrap {
 	text-align: center;

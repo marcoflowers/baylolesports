@@ -27,10 +27,17 @@ class tournament(ndb.Model): #by no means final
     admins = ndb.UserProperty(repeated=True)
     teams = ndb.KeyProperty(repeated=True)
     size = ndb.IntegerProperty()
+    join_requests = ndb.KeyProperty(repeated=True)
+    games = ndb.KeyProperty(repeated=True)
+
+
 
 class game(ndb.Model):
-    bracket_spot = ndb.IntegerProperty()
+    round = ndb.IntegerProperty()
+    spot = ndb.IntegerProperty()
     teams = ndb.KeyProperty(repeated=True)
+    scheduled_date = ndb.DateTimeProperty()
+    happened = ndb.BooleanProperty()
 
 
 
@@ -61,6 +68,49 @@ def new_team(name, admin, members):
 def new_player(name, division, id):
     new_player = player(name=name, division=division, id=id)
     new_team.put()
+
+def new_tournament(name, size):
+    new_tournament = tournament(name=name, size=size)
+    placeholder_teams = []
+    for num in range(0, size):
+        new_team = team(name="Seed " + str(num + 1))
+        placeholder_teams.append(new_team)
+    for num in range(0, size/2):
+        round = 1
+        spot = num
+        teams = [placeholder_teams.pop(0).put(),placeholder_teams.pop(0).put()]
+        placeholder_game = game(round=round, spot=spot, teams=teams)
+        key = placeholder_game.put()
+        new_tournament.games.append(key)
+    if size >= 8:
+        for num in range(0, size/4):
+            round = 2
+            spot = num
+            teams = [team().put(), team().put()]
+            placeholder_game = game(round=round, spot=spot, teams=teams)
+            key = placeholder_game.put()
+            new_tournament.games.append(key)
+    if size >= 16:
+        for num in range(0, size/8):
+            round = 2
+            spot = num
+            teams = [team().put(), team().put()]
+            placeholder_game = game(round=round, spot=spot, teams=teams)
+            key = placeholder_game.put()
+            new_tournament.games.append(key)
+    if size == 32:
+        for num in range(0, size/16):
+            round = 2
+            spot = num
+            teams = [team().put(), team().put()]
+            place_holder_game = game(round=round, spot=spot, teams=teams)
+            key = placeholder_game.put()
+            new_tournament.games.append(key)
+    return new_tournament.put()
+
+
+        
+
 
 
 def get_ukey(object):

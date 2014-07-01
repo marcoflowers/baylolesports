@@ -2,8 +2,8 @@
 
 
 
-{% block tab_contents %}
-<div class="tab-pane active" id="bracket">
+{% block bracket_tab %}
+<div class="tab-pane" id="bracket">
     <div style="text-align:center"><h1>Bracket</h1></div>
     <div class="row" id="slots">
         <div class="col-md-2" value="0">
@@ -23,31 +23,30 @@
                     <div class="round3-top">Top finalist</div>
                     <div class="round2-topwrap">
                         <div class="round2-top">1-8 winner</div>
-                        <div class="round1-top" value="1"><div class="slot" draggable>#1 seed</div></div>
-                        <div class="round1-bottom" value="2"><div class="slot" draggable>#8 seed</div></div>
+                        <div class="round1-top" value="0-0"><div class="slot" draggable>#1 seed</div></div>
+                        <div class="round1-bottom" value="0-1"><div class="slot" draggable>#8 seed</div></div>
                     </div>
                     <div class="round2-bottomwrap">
                         <div class="round2-bottom">4-5 winner</div>
-                        <div class="round1-top" value="3"><div class="slot" draggable>#4 seed</div></div>
-                        <div class="round1-bottom" value="4"><div class="slot" draggable>#5 seed</div></div>
+                        <div class="round1-top" value="1-0"><div class="slot" draggable>#4 seed</div></div>
+                        <div class="round1-bottom" value="1-1"><div class="slot" draggable>#5 seed</div></div>
                     </div>
                 </div>
                 <div class="round3-bottomwrap">
                     <div class="round3-bottom">Bottom finalist</div>
                     <div class="round2-topwrap">
                         <div class="round2-top">2-7 winner</div>
-                        <div class="round1-top" value="5"><div class="slot" draggable>#2 seed</div></div>
-                        <div class="round1-bottom" value="6"><div class="slot" draggable>#7 seed</div></div>
+                        <div class="round1-top" value="2-0"><div class="slot" draggable>#2 seed</div></div>
+                        <div class="round1-bottom" value="2-1"><div class="slot" draggable>#7 seed</div></div>
                     </div>
                     <div class="round2-bottomwrap">
                         <div class="round2-bottom">3-6 winner</div>
-                        <div class="round1-top" value="7"><div class="slot" draggable>#3 seed</div></div>
-                        <div class="round1-bottom" value="8"><div class="slot" draggable>#6 seed</div></div>
+                        <div class="round1-top" value="3-0"><div class="slot" draggable>#3 seed</div></div>
+                        <div class="round1-bottom" value="3-1"><div class="slot" draggable>#6 seed</div></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}
