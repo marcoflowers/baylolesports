@@ -23,8 +23,8 @@ from controllers import home, team, tournament, queue
 
 app = webapp2.WSGIApplication([
     ('/', home.index),
-    ('/team/check_summoner_name/(.*)/(.*)', team.check_summoner_name),
     ('/team/check_team_name/(.*)', team.check_team_name_handler),
+    ('/team/check_summoner_name/(.*)/(.*)', team.check_summoner_name),
     ('/team/new_team', team.new_team),
     ('/team/get_team/(.*)/(.*)', team.get_team),
     ('/team/(.*)', team.team_page),
