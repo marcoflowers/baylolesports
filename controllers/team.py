@@ -1,6 +1,7 @@
 from base import BaseHandler
 import json
 from models.models import *
+from google.appengine.api import mail
 
 class index(BaseHandler):
     def get(self):
@@ -49,6 +50,17 @@ class new_team(BaseHandler):
             if name !="":
                 player_names.append(name)
         new_team_key=create_team_players(user, player_names, team_name)
+        message = mail.EmailMessage(sender="marco.flowers12@gmail.com",subject="Welcome to Baylolesports")
+        message.to = user.email()
+        message.body = """
+        Hello,
+
+        Welcome to Baylolesports
+
+        -The Baylolesports Team
+        """
+
+        message.send()
         self.redirect("/team/"+str(new_team_key.id()))
 
 
@@ -68,24 +80,53 @@ class check_summoner_name(BaseHandler):
 
 class get_team(BaseHandler):
     def get (self, type, input):
+        teams=[]
         output={"teams":[]}
-        if(type=="Name"):
+        if(type=="Team Name "):
             teams = team.query(team.name==input).fetch()
-            for group in teams:
-                output["teams"].append({"name":group.name, "id":group.key.id()})
-        elif type=="Team Member":
+        elif type=="Team Member ":
             all_teams = team.query().fetch()
             teams=[]
             for teamo in all_teams:
                 for member in teamo.members:
                     if(key_object(member).name.lower()==input.lower()):
                         teams.append(teamo)
-            for group in teams:
-                output["teams"].append({"name":group.name, "id":group.key.id()})
         else:
             output["error"]="not_valid"
+        for group in teams:
+            players=[]
+            for member in group.members:
+                players.append(key_object(member).name)
+            output["teams"].append({"name":group.name, "id":group.key.id(), "players":players})
+        
         self.response.out.write(json.dumps(output))
 class check_team_name_handler(BaseHandler):
     def get(self, name):
         logging.info(check_name_team(name))
         self.response.out.write(json.dumps({"name":check_name_team(name)}));
+class get_more_teams(BaseHandler):
+    def post(self):
+        output={"teams":[]}
+        current_teams=json.loads(self.request.get("current_teams"))
+        logging.info
+        teams = team.query().fetch()
+        count=0
+        for teamo in teams:
+            if count==5:
+                break
+            check=True
+            for current_team in current_teams:
+                logging.info(teamo.key.id())
+                logging.info(current_team)
+                logging.info("------")
+                if teamo.key.id() == int(current_team):
+                    check=False
+                    logging.info(teamo.name)
+            if (check):
+                players=[]
+                for member in teamo.members:
+                    players.append(key_object(member).name)
+                output["teams"].append({"name":teamo.name, "id":teamo.key.id(), "players":players})
+                count=count+1
+        logging.info(output)
+        self.response.out.write(json.dumps(output))

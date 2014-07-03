@@ -5,24 +5,28 @@
 		<h2>Search for a Team</h2>
 		<div class="input-group">
 	      <div class="input-group-btn">
-	        <button id="drop_search_but" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Name</button>
+	        <button id="drop_search_but" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Team Name <span class="caret"></span></button>
 	        <ul class="dropdown-menu" role="menu">
-	          <li><a id="drop_search" href="#">Team Member</a></li>
+	          <li><a id="drop_search" href="#">Team Member </a></li>
 	        </ul>
 	      </div><!-- /btn-group -->
 	      <input type="text" class="form-control">
 	    </div><!-- /input-group -->
 	    <br>
-	    <button id="go_button" type="button" class="btn btn-default">Go</button>
+	    
 	</div>
 	<div class="row">
 		<div class="team_results text-center">
-			<br><br>
 			<h3>Teams</h3>
 			<div class="list-group">
 
 				{% for team in teams %}
-  				<a href="/team/{{team.key.id()}}" class="list-group-item">{{team.name}}</a>
+  				<a id="{{team.key.id()}}" href="/team/{{team.key.id()}}" class="list-group-item"><h3>{{team.name}}</h3><div class="table-responsive"><table class='table text-center'><tbody>
+  				{% for member in team.members %}
+  					<td>{{key_object(member).name}}</td>
+  				{% endfor %}
+  				</tbody></table></div>
+  				</a>
   				<br>
   				{% endfor %}
   			</div>
@@ -32,28 +36,86 @@
 $( document ).ready(function() {
 	$("#drop_search").click(function(){
 		var name = $("#drop_search_but").text();
-		$("#drop_search_but").text($(this).text())
+		$("#drop_search_but").html($(this).text()+"<span class='caret'></span>")
 		$(this).text(name)
 	});
-	$("#go_button").click(function(){
-		console.log("go")
-		var type = $("#drop_search_but").text();
-		var input = $("div.input-group input").val()
-		console.log(input)
-		$.ajax({
-		  url: "/team/get_team/"+type+"/"+input,
-		  dataType: 'json',
-		  success: function(data) {
+	input_timer($("div.input-group input"), search_function)
+	scroll_reload()
+
+});
+function input_timer(input, search_function)
+{
+	console.log(input)
+	var timer_handler=null;
+	var interval=5000;
+	input.keydown(function(){
+		if(timer_handler){
+    		clearTimeout(timer_handler);
+    		timer_handler = null;
+		}
+		if ($(this).val) {
+        timer_handler = setTimeout(search_function, 500, input)
+    }
+	})
+}
+var stop_loading=false
+function add_team(id, name, players)
+{
+	output=""
+	for(var x =0;x<players.length;x=x+1)
+	{
+		output=output+"<td>"+players[x]+"</td>"
+	}
+	$(".team_results .list-group").append("<a id='"+id+"' href='/team/"+id+"' class='list-group-item'><h3>"+name+"</h3><div class='table-responsive'><table class='table text-center'><tbody>"+output+"</tbody></table></div></a><br>")
+}
+function scroll_reload(){
+	if ($(window).scrollTop() + $(window).height() > 
+    $(document).height()-100 && stop_loading==false) { 
+    		load_new_items()
+	 }
+	 setTimeout('scroll_reload();', 2000);  
+}
+
+function search_function(input)
+{
+	stop_loading=true
+	var type = $("#drop_search_but").text();
+	var input_val = input.val()
+	$.ajax({
+		url: "/team/get_team/"+type+"/"+input_val,
+		dataType: 'json',
+		success: function(data) {
 		  	$(".team_results .list-group").empty()
 		  	teams= data.teams
 		  	for(var i =0;i<teams.length;i=i+1)
 		  	{
-		  		$(".team_results .list-group").append("<a href='/team/"+teams[i].id+"' class='list-group-item'>"+teams[i].name+"</a>")
+		  		add_team(teams[i].id, teams[i].name, teams[i].players)
 		  	}
-		  }
+
+		}
 		  
-		});
 	});
-});
+}
+
+function load_new_items()
+{
+	current_teams=[]
+	$(".list-group a").each(function(){
+		current_teams.push($(this).attr("id"))
+	})
+	$.ajax({
+		type: 'POST',
+        data: {"current_teams":JSON.stringify(current_teams)},
+		url: "/team/get_more_teams",
+		dataType: 'json',
+		success: function(data) {
+			teams= data.teams
+		  	for(var i =0;i<teams.length;i=i+1)
+		  	{
+		  		add_team(teams[i].id, teams[i].name, teams[i].players)
+		  	}
+		}
+	});
+}
 </script>
 {% endblock %}
