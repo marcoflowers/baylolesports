@@ -22,15 +22,13 @@ To Do:
 (Everything)
 
 
-***From now on, all template values must be entered as template_values['key'] = value***
-this will let us always have login
+controllers extend BaseHandler (in controllers/base.py)
+    use self.render_template()
 
 Build a framework that allows for expansion and revision
 
 Brainstorm and finalize ndb models
 	Split up models.py, its going to get pretty big
-
-Brainstorm and finalize tournament filling methods (HTML5 Drag and Drop?)
 
 Incorporate Javascript(AJAX)=JSON encoding
 
@@ -38,7 +36,6 @@ Brainstorm Integration with Riot API
 	(and how to adhere to their rate-limiting), Maybe just pull most of the data during chron jobs where we can wait as long as we want and no one cares(like stats)
 
 
-Follow MVC?(Model, View, Controller) - yes
 
 Templates to create:
 
@@ -52,6 +49,5 @@ home/
 	index
 
 Tournament Tasklist
-Create
 Index
 View
