@@ -1,0 +1,42 @@
+{% extends "/templates/base.html" %}
+
+
+{% block head %}
+
+
+{% endblock %}
+
+{% block content %}
+
+<div id="content">
+    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+        <li class="active"><a href="#info" data-toggle="tab">Info</a></li>
+        {% if tournament.finalized != True %}
+        <li><a href="#join" data-toggle="tab">Join Tournament</a></li>
+        {% else %}
+            <li><a href="#bracket" data-toggle="tab">Bracket</a></li>
+            <li><a href="#games" data-toggle="tab">Games</a></li>
+            <li><a href="#schedule" data-toggle="tab">Schedule</a></li>
+        {% endif %}
+    </ul>
+    <div class="tab-content" style="border:1px solid">
+        <div class="tab-pane" id="info">
+        </div>
+        {% if tournament.finalized != True %}
+        <div class="tab-pane" id="join">
+        </div>
+        {% else %}
+        <div class="tab-pane" id="bracket">
+            {% block bracket_tab %}{% endblock %}
+        </div>
+        <div class="tab-pane" id="games">
+        </div>
+        <div class="tab-pane" id="schedule">
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
