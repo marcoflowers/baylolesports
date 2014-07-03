@@ -27,11 +27,11 @@ class BaseHandler(webapp2.RequestHandler):
 		user = users.get_current_user()
 		if user:
 		    message = user.nickname()
-		    url = users.create_logout_url()
+		    url = users.create_logout_url(self.request.uri)
 		    url_text = "Logout"
 		else:
 		    message = ''
-		    url = users.create_login_url()
+		    url = users.create_login_url(self.request.uri)
 		    url_text = "Login"
 
 

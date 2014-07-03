@@ -1,2 +1,4 @@
 .*.sw*
 *.pyc
+/secrets
+/controllers/client_secrets.json

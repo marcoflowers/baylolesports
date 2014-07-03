@@ -89,18 +89,17 @@ $( document ).ready(function() {
 	        url: '/tournament/check_name/' + tournament_name, 
 	        dataType: 'json',
 	        success: function(data) {
-	        	var input = $("#tournament_name")
-	        	
-	            if(data.id ==false)
+                    var input = $("#tournament_name");
+	            if(data.available == false)
 	            {
-	            	input.parent().addClass("has-error")
-	            	input.parent().children("label").append("<small id='tournament-name-error'>Name Already In Use</small>")
+	            	input.parent().addClass("has-error");
+	            	input.parent().children("label").append('<small style="color:red;" id="tournament-name-error"> Name Already In Use</small>');
 	            }
 	            else
 	            {
-	            	input.parent().addClass("has-success")
+	            	input.parent().addClass("has-success");
 	            }
-	            checkstatus()
+	            checkstatus();
 	        }
 		});
 	}

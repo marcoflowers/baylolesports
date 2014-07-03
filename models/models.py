@@ -29,6 +29,7 @@ class tournament(ndb.Model): #by no means final
     size = ndb.IntegerProperty()
     join_requests = ndb.KeyProperty(repeated=True)
     games = ndb.KeyProperty(repeated=True)
+    finalized = ndb.BooleanProperty()
 
 
 
@@ -106,7 +107,7 @@ def new_tournament(name, size):
             place_holder_game = game(round=round, spot=spot, teams=teams)
             key = placeholder_game.put()
             new_tournament.games.append(key)
-    return new_tournament.put()
+    new_tournament.put()
 
 
         

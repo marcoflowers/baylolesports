@@ -1,6 +1,6 @@
 import webapp2
 import os
-from models import models
+from models.models import *
 import jinja2
 import logging
 from base import BaseHandler
@@ -13,15 +13,16 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 
 
-class tournament_page(BaseHandler):
+class admin_page(BaseHandler):
     def get(self, ukey):
         self.login()
         template_values = {}
-        #key = to_key(ukey)
-        #tournament = key_object(key)
-        size = ukey
-        template_values["size"] = size
-        self.render_template('/templates/tournament/bracket_%s.html' % size, template_values)
+        key = to_key(ukey)
+        tournament = key_object(key)
+        template_values['tournament'] = tournament
+        #size = ukey
+        #template_values["size"] = size
+        self.render_template('/templates/tournament/admin_%s.html' % tournament.size, template_values)
 
     def post(self, ukey):
         logging.info("Data Saved")
@@ -67,15 +68,54 @@ class new_tournament(BaseHandler):
     def post(self):
         name = self.request.get("tournament_name")
         size = int(self.request.get("size").encode())
-        key = models.new_tournament(name, size)
-        self.redirect('/tournament/' + key.urlsafe())
+        new_tournament = tournament(name=name, size=size)
+        placeholder_teams = []
+        for num in range(0, size):
+            new_team = team(name="Seed " + str(num + 1))
+            placeholder_teams.append(new_team)
+        for num in range(0, size/2):
+            round = 1
+            spot = num
+            teams = [placeholder_teams.pop(0).put(),placeholder_teams.pop(0).put()]
+            placeholder_game = game(round=round, spot=spot, teams=teams)
+            key = placeholder_game.put()
+            new_tournament.games.append(key)
+        if size >= 8:
+            for num in range(0, size/4):
+                round = 2
+                spot = num
+                teams = [team().put(), team().put()]
+                placeholder_game = game(round=round, spot=spot, teams=teams)
+                key = placeholder_game.put()
+                new_tournament.games.append(key)
+        if size >= 16:
+            for num in range(0, size/8):
+                round = 2
+                spot = num
+                teams = [team().put(), team().put()]
+                placeholder_game = game(round=round, spot=spot, teams=teams)
+                key = placeholder_game.put()
+                new_tournament.games.append(key)
+        if size == 32:
+            for num in range(0, size/16):
+                round = 2
+                spot = num
+                teams = [team().put(), team().put()]
+                place_holder_game = game(round=round, spot=spot, teams=teams)
+                key = placeholder_game.put()
+                new_tournament.games.append(key)
+        new_tournament.finalized = False
+        new_tournament.admins.append(users.get_current_user())
+        new_tournament.active = True
+        key = new_tournament.put()
+        self.redirect('/tournament/admin/' + key.urlsafe())
 
 
 class check_name(BaseHandler):
     def get(self, name):
         tournament_list = tournament.query(tournament.name==name).fetch()
         available = True
-        if(tournament_list > 0):
+        if(len(tournament_list) > 0):
             available = False
         self.response.out.write(json.dumps({"available":available}))
 
