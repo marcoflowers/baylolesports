@@ -11,6 +11,20 @@
         git branch -d feature
         git push origin develop
 
+
+
+***git***
+git checkout *branch*
+    develop should only have small tweaks
+    create a feature branch from develop for individual work
+        git checkout -b feature develop
+    only push a master when it is ready for deployment
+
+
+
+
+
+
 FOLLOW GOOGLE'S STYLE GUIDE
 
 Style Guide

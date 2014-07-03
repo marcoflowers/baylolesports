@@ -24,7 +24,6 @@ function handleDragEnd(e) {
     this.style.opacity = '1.0';
 
     [].forEach.call(slots, function (slot) {
-        console.log(slot);
         slot.classList.remove('over');
     });
 }
@@ -54,16 +53,14 @@ function handleDrop(e) {
         // Set the source slot's HTML to the HTML of the slot we dropped on.
         dragSrcEl.innerHTML = this.innerHTML;
         this.innerHTML = e.dataTransfer.getData('text/html');
-        //$.post(window.location.pathname,
-            
     }
 
     return false;
 }
 $(document).ready(function() {
+    console.log("Drag drop ready");
     var slots = $("#slots .slot");
     [].forEach.call(slots, function(slot) {
-        console.log(slot);
         slot.addEventListener('dragstart', handleDragStart, false);
         slot.addEventListener('dragenter', handleDragEnter, false)
         slot.addEventListener('dragover', handleDragOver, false);
@@ -72,3 +69,18 @@ $(document).ready(function() {
         slot.addEventListener('dragend', handleDragEnd, false);
     });
 });
+
+
+function save() {
+    var slots = $("#slots .slot");
+    data = {};
+    [].forEach.call(slots, function(slot) {
+        console.log($(slot).parents().attr("value"));
+        console.log($(slot).text());
+    });
+    $.post(document.URL, data, function() {
+        console.log("Success");
+    });
+}
+
+

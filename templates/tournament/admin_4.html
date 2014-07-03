@@ -1,0 +1,38 @@
+{% extends "/templates/tournament/admin_base.html" %}
+
+
+{% block bracket_tab %}
+<div class="tab-pane" id="bracket">
+    <div class="row" id="slots">
+        <div class="col-md-2" value="0">
+            <div class="team_pool" style="height:200px">
+                <p>Available Teams<p>
+                {% for team in tournament.teams %}
+                <div class="slot" draggable value={{get_ukey(team)}}>{{team.name}}</div>
+                {% endfor %}
+                {#% for team in range(4) %}
+                    <div class="slot" value="{{team+1}}" draggable>Team {{team+1}}</div>
+                {% endfor %#}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="tournament4-wrap">
+                <div class="round3-top winner3">{#% 3-1 %#}Winner</div>
+                <div class="round2-topwrap">
+                    <div class="round2-top">{#% 2-1 %#}1-4 winner</div>
+                        <div class="round1-top" value="0-0"><div class="slot" draggable>#1 seed</div></div>
+                        <div class="round1-bottom" value="0-1"><div class="slot" draggable>#4 seed</div></div>
+                    </div>
+                <div class="round2-bottomwrap">
+                    <div class="round2-bottom">{#% 2-2 %#}2-3 winner</div>
+                    <div class="round1-top" value="1-0"><div class="slot" draggable>#2 seed</div></div>
+                    <div class="round1-bottom" value="1-1"><div class="slot" draggable>#3 seed</div></div>
+                </div>
+                <div id="save">
+                    <button class="save" onclick="save()">Save</button><br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

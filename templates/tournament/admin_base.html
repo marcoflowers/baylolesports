@@ -1,0 +1,158 @@
+{% extends "/templates/base.html" %}
+
+
+{% block head %}
+
+<link rel="stylesheet" type="text/css" href="/static/bracket.css" />
+<script src="/static/js/drag_drop.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+<script type="text/javascript" src="/static/bootstrap/js/bootstrap.js"></script>
+<!--script type="text/javascript" src="../static/js/bootstrap-tab.js"></script-->
+
+{% endblock %}
+
+
+{% block content %}
+
+<div id="content">
+<ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+    {% if tournament.finalized != True %}
+        <li class="active"><a href="#join" data-toggle="tab">Join Requests</a></li>
+        <li><a href="#bracket" data-toggle="tab">Bracket</a></li>
+    {% else %}
+        <li class="active"><a href="#bracket" data-toggle="tab">Bracket</a></li>
+    {% endif %}
+    <li><a href="#teams" data-toggle="tab">Teams</a></li>
+    {% if tournament.finalized %}
+        <li><a href="#schedule" data-toggle="tab">Schedule</a></li>
+        <li><a href="#results" data-toggle="tab">Game Results</a></li>
+    {% endif %}
+    <li><a href="#settings" data-toggle="tab">Settings</a></li>
+</ul>
+
+
+<div class="tab-content" style="border:1px solid">
+    {% if tournament.finalized != True %}
+    <div class="tab-pane active" id="join">
+        <form method="POST">
+        {% for team in tournament.join_requests %}
+            <input type="checkbox" name="{{ get_ukey(team) }}">
+            <a href="/teams/{{ get_ukey(team) }}">{{ team.name }}</a>
+            <br>
+        {% endfor %}
+        <input type="submit" value="Add Teams">
+        </form>
+    </div>
+    {% endif %}
+    {% block bracket_tab %}{% endblock %}
+    <div class="tab-pane" id="teams">
+        <div class="row" id="team_list">
+            <div class="col-md-2" style="border-right:2px solid">
+                <ul style="height:450px;overflow:auto;" id="tabs" class="nav nav-tabs nav-stacked">
+                    <li class="active" style="overflow:hidden"><a href="#all" data-toggle="tab">All</a></li>
+                    {#% for team in range(1, 25) %}
+                        <li style="overflow:hidden"><a href="#{{team}}" data-toggle="tab">Team {{team}}</a></li>
+                    {% endfor %#}
+                    {% for team in tournament.teams %}
+                        <li><a href="#{{ get_ukey(team) }}" data-toggle="tab">{{ team.name }}</a></li>
+                    {% endfor %}
+            </div>
+            <div class="col-md-9 tab-content">
+                <div class="tab-pane active" id="all">
+                    <button value="all">All teams</button>
+                </div>
+                {#% for team in range(1, size|int + 1) %#}
+                {% for team in tournament.teams %}
+                    <div class="tab-pane" id="{{ team }}" style="text-align:center">
+                        <h1>Team {{ team }}</h1>
+                        <button class="contact_admin">
+                            Contact Admin
+                        </button>
+                        <button class="kick" onclick="kick({{team.key()}}">
+                            Kick Team
+                        </button>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <h5>Players</h5>
+                                {% for member in team.members %}
+                                    <a href="/player/{{ get_ukey(member)}}1">Player</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% for team in tournament.teams %}
+                    <div class="tab-pane" id="{{ get_ukey(team) }}">
+                        <h1>{{ team.name }}</h1>
+                        <button class="contact_admin">
+                            Contact Admin
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% if tournament.finalized %}
+    <div class="tab-pane" id="schedule">
+        <div class="col-md-2">
+            <ul id="tabs" class="nav nav-tabs nav-stacked">
+                {% for game in tournament.games %}
+                    {% if game.happened != True %}
+                        <li><a href="#{{ get_ukey(game) }}">Round {{ game.round }} Game {{ game.spot }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-2 tab-content">
+            {% for game in tournament.games %}
+                {% if game.happened != True %}
+                    <div class="tab-pane" id="{{ get_ukey(game) }}">
+                        Set Date and Time:<br>
+                        <form action="POST">
+                            <input type="date" name="scheduled_date"><br>
+                            <input type="submit" value="Schedule">
+                        </form>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="tab-pane" id="results">
+        <div class="col-md-2">
+            <ul id="tabs" class="nav nav-tabs nav-stacked">
+                {% for game in tournament.games %}
+                    {% if game.happened %}
+                        <li><a href="#{{ get_ukey(game) }}">Round {{ game.round }} Game {{ game.spot }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-2 tab-content">
+            {% for game in tournament.games %}
+                {% if game.happened %}
+                    <div class="tab-pane" id="{{ get_ukey(game) }}">
+                        <p>Who won?</p>
+                        {% for team in game.teams %}
+                            <button>{{ team.name }}</button>
+                        {% endfor %}
+                        <p>Didn't Happen?</p>
+                        <button>Reschedule</button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    <div class="tab-pane" id="settings">
+    </div>
+
+</div>
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            $('#tabs').tab();
+        });
+    </script>
+
+
+{% endblock %}
