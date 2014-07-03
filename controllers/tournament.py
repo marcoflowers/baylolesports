@@ -12,6 +12,14 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 )
 
 
+class display_tournament(BaseHandler):
+    def get(self, ukey):
+        self.login()
+        template_values = {}
+        key = to_key(ukey)
+        tournament = key_object(key)
+        template_values['tournament'] = tournament
+        self.render_template('/templates/tournament/display_%s.html' % tournament.size, template_values)
 
 class admin_page(BaseHandler):
     def get(self, ukey):
@@ -53,9 +61,11 @@ class admin_page(BaseHandler):
 
 class index(BaseHandler):
     def get(self):
-        #query = tournament.query(active=True).order(-tournament.created)
-        #template_values = {"tournaments", query.fetch()}
-        template_values={}
+        self.login()
+        query = tournament.query(tournament.active==True).order(-tournament.created)
+        tournaments = query.fetch()
+        template_values = {"tournaments":tournaments}
+        logging.info(tournaments)
         self.render_template('/templates/tournament/index.html', template_values) 
 
 
@@ -66,7 +76,7 @@ class new_tournament(BaseHandler):
         self.render_template('/templates/tournament/new_tournament.html', template_values)
 
     def post(self):
-        name = self.request.get("tournament_name")
+        name = self.request.get("tournament_name").encode()
         size = int(self.request.get("size").encode())
         new_tournament = tournament(name=name, size=size)
         placeholder_teams = []

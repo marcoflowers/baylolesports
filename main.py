@@ -1,7 +1,6 @@
 import sys
 sys.path.insert(0, "libs")
 
-
 from google.appengine.ext import ndb
 from google.appengine.api import users
 from google.appengine.ext import blobstore
@@ -35,11 +34,9 @@ from google.appengine.api import memcache
 
 
 
-<<<<<<< HEAD
 from controllers import home, team, tournament, queue
-=======
+
 CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), 'controllers/client_secrets.json')
->>>>>>> tournaments
 
 MISSING_CLIENT_SECRETS_MESSAGE = """
 <h1>Warning: Please configure OAuth 2.0</h1>
@@ -77,6 +74,7 @@ app = webapp2.WSGIApplication([
     ('/tournament/new', tournament.new_tournament),
     ('/tournament/index', tournament.index),
     ('/tournament/admin/(.*)', tournament.admin_page),
+    ('/tournament/(.*)', tournament.display_tournament),
     ('/schedule/authorize', calendar.calendar),
     ('/schedule/add_schedule', calendar.add_calendar),
     (decorator.callback_path, decorator.callback_handler()),

@@ -4,7 +4,9 @@
 {% block content %}
 
 {% for tournament in tournaments %}
-    <div class="tournament"
+    <div class="tournament">
+        <a href="/tournament/{{get_ukey(tournament)}}">{{tournament.name}}</a>
+    </div>
 
 {% endfor %}
 
