@@ -45,20 +45,20 @@ $( document ).ready(function() {
 });
 function input_timer(input, search_function)
 {
-	console.log(input)
 	var timer_handler=null;
 	var interval=5000;
 	input.keydown(function(){
+		console.log("down")
 		if(timer_handler){
     		clearTimeout(timer_handler);
     		timer_handler = null;
 		}
-		if ($(this).val) {
         timer_handler = setTimeout(search_function, 500, input)
-    }
+    
 	})
 }
 var stop_loading=false
+var beg=true
 function add_team(id, name, players)
 {
 	output=""
@@ -81,12 +81,21 @@ function search_function(input)
 	stop_loading=true
 	var type = $("#drop_search_but").text();
 	var input_val = input.val()
+	if(input_val=="")
+	{
+		input_val="dfskldfkdssdfklsdfkl"
+		stop_loading=false
+	}
 	$.ajax({
 		url: "/team/get_team/"+type+"/"+input_val,
 		dataType: 'json',
 		success: function(data) {
 		  	$(".team_results .list-group").empty()
 		  	teams= data.teams
+		  	if(teams.length==0)
+		  	{
+		  		$(".team_results .list-group").append("No teams match your search")
+		  	}
 		  	for(var i =0;i<teams.length;i=i+1)
 		  	{
 		  		add_team(teams[i].id, teams[i].name, teams[i].players)
@@ -110,6 +119,11 @@ function load_new_items()
 		dataType: 'json',
 		success: function(data) {
 			teams= data.teams
+			if(teams.length==0)
+			{
+				stop_loading=true
+			}
+			
 		  	for(var i =0;i<teams.length;i=i+1)
 		  	{
 		  		add_team(teams[i].id, teams[i].name, teams[i].players)

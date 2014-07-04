@@ -1,0 +1,95 @@
+{% extends "/templates/base.html" %}
+{% block content %}
+<div class="row" >
+	<div class="col-md-12">
+		<h1 class="text-center">{{team.name}}-Admin Page</h1>
+		<div class="col-md-3 text-center">
+			<h1></h1>
+			<h3>Team Members</h3>
+			<div class="list-group">
+			{% for player_key in team.members %}
+				{% if loop.index0 ==0 %}
+				<a  href="#" class="list-group-item">{{key_object(player_key).name}}</a>
+				{% else %}
+				<a  href="#" class="list-group-item">{{key_object(player_key).name}}</a>
+				{% endif %}
+				
+			{% endfor %}
+			{% if team.members|count <7 %}
+			<form>
+				<div class="form-group" id="1">
+				    <label for="player1" class="control-label">New Player</label>
+				    <input type="text"  class="form-control player" name="player1" id="player1" placeholder="Enter Summoner Name">
+				  </div>
+				<button id="new_memeber" type="button" class="btn btn-default">Add Team Memeber</button>
+			</form>
+			{% endif %}
+			</div>
+		</div>
+	
+	</div>
+</div>
+<script>
+$( document ).ready(function() {
+var timer_handler=null;
+var interval=5000;
+$("form").on("focusout", "input.player",function(){
+		if(timer_handler){
+    		clearTimeout(timer_handler);
+    		timer_handler = null;
+		}
+		doneTyping($(this))
+		checker()
+	});
+$("button#new_memeber").button("loading")
+});
+function checker()
+{
+	if($("input#player1").parent("div").hasClass("has-success"))
+	{
+		$("button#new_memeber").button("reset")
+	}
+	else
+	{
+		$("button#new_memeber").button("loading")
+	}
+}
+function doneTyping(input)
+		{
+			var sum_name = input.val();
+			var position = input.parent().attr('id');
+			if(sum_name!="")
+			{
+				$.ajax({
+			        url: '/team/check_summoner_name/'+sum_name+"/"+position, 
+			        dataType: 'json',
+			        success: function(data) {
+			        	console.log("ajax")
+			        	input.parent().removeClass("has-error")
+						input.parent().removeClass("has-success")
+						input.parent().children("label").children("small").remove()
+			       		if(data.id ==false)
+			            {
+			            	input.parent().addClass("has-error")
+			            	input.parent().children("label").append("<small id='sum_name_error'>-Not a Valid Summoner Name</small>")
+			            }
+			            else
+			            {
+			            	
+			            	
+			            	input.parent().addClass("has-success")
+			
+			            }
+			        }
+			    });
+			}
+			else
+			{
+				input.parent().removeClass("has-error")
+						input.parent().removeClass("has-success")
+						input.parent().children("label").children("small").remove()
+			}
+			
+		}
+</script>
+{% endblock %}

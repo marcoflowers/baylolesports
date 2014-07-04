@@ -56,6 +56,9 @@ def get_ukey(object):
 def to_key(ukey):
     return ndb.Key(urlsafe=ukey)
 
+def to_id(obj):
+    return obj.key.id()
+
 def key_object(key):
     return key.get()
 
@@ -131,4 +134,3 @@ def check_name_team(team_name):
         return False
     else:
         return True
-

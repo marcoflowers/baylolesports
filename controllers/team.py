@@ -14,6 +14,23 @@ class index(BaseHandler):
         }
         self.render_template('/templates/team/index.html', template_values)
 
+class admin(BaseHandler):
+    def get(self, id):
+        self.login()
+        teamo = team.get_by_id(int(id))
+        if not self.user:
+            self.redirect(get_login_url("/team/admin/"+id))
+        if self.user==teamo.admin:
+            
+
+            template_values={
+            "team":teamo,
+            }
+            self.render_template('/templates/team/admin_page.html', template_values)
+        else:
+             self.redirect("/team/"+id)
+        
+
 
 class team_page(BaseHandler):
     def get(self, id):
@@ -23,9 +40,17 @@ class team_page(BaseHandler):
         div_urls=[]
         for member in teamo.members:
             div_urls.append(rank_to_url(key_object(member).division))
+        logging.info(self.user)
+        logging.info(teamo.admin)
+        if self.user==teamo.admin:
+            admin=1
+        else:
+            admin=2
+        logging.info(admin)
         template_values={
             "team":teamo,
             "div_urls":json.dumps(div_urls),
+            "admin":admin,
         }
 
         self.render_template('/templates/team/team_page.html', template_values)
@@ -63,16 +88,6 @@ class new_team(BaseHandler):
         message.send()
         self.redirect("/team/"+str(new_team_key.id()))
 
-
-class admin_page(BaseHandler):
-    def get(self):
-        self.login()
-
-
-
-        template_values={}
-        self.render_template('/templates/team/new_team.html', template_values)
-
 class check_summoner_name(BaseHandler):
     def get(self, name, position):
         logging.info("check_summoner_name")
@@ -82,14 +97,22 @@ class get_team(BaseHandler):
     def get (self, type, input):
         teams=[]
         output={"teams":[]}
-        if(type=="Team Name "):
-            teams = team.query(team.name==input).fetch()
-        elif type=="Team Member ":
+        
+        if(input=="dfskldfkdssdfklsdfkl"):
+            teams = team.query().fetch(limit=5)
+        elif(type=="Team Name "):
             all_teams = team.query().fetch()
             teams=[]
             for teamo in all_teams:
+                if(input in teamo.name):
+                    teams.append(teamo)
+        elif type=="Team Member ":
+            all_teams = team.query().fetch()
+            teams=[]
+            teams=[]
+            for teamo in all_teams:
                 for member in teamo.members:
-                    if(key_object(member).name.lower()==input.lower()):
+                    if(input.lower() in key_object(member).name.lower() ):
                         teams.append(teamo)
         else:
             output["error"]="not_valid"

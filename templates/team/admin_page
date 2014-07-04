@@ -16,11 +16,6 @@
 				
 			{% endfor %}
 			</div>
-			{% if admin == 1 %}
-			<a href="/team/admin/{{to_id(team)}}" type="button" class="btn btn-default">
-				Admin Page
-			</a>
-		{% endif %}
 		</div>
 		
 		<div class="col-md-9" id="player_results">
