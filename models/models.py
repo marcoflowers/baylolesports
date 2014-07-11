@@ -14,6 +14,7 @@ class team(ndb.Model): #don't touch
     members = ndb.KeyProperty(repeated=True)
     admin = ndb.UserProperty()
     created = ndb.DateTimeProperty(auto_now_add=True)
+    color = ndb.StringProperty()
 
 class player(ndb.Model): #don't touch
     # query with player.get_by_id(id)
@@ -107,7 +108,7 @@ def rank_to_url(division):
         return "http://lkimg.zamimg.com/images/medals/placing.png"
 
 
-def create_team_players(user, player_names, team_name):
+def create_team_players(user, player_names, team_name,team_color):
     player_keys=[]
     for player_name in player_names:
         sum_id = get_sum_id(player_name)
@@ -123,7 +124,7 @@ def create_team_players(user, player_names, team_name):
             player_key=new_player.put()
             player_keys.append(player_key)
             taskqueue.add(countdown=20,name="player"+str(player_key.id())+str(datetime.date.today()), queue_name="riot", url='/queue/player_stats', params={'id': player_key.id()})
-    new_team = team(name=team_name,members=player_keys,admin=user)
+    new_team = team(name=team_name,members=player_keys,admin=user, color=team_color)
     new_team_key = new_team.put()
     return new_team_key
 

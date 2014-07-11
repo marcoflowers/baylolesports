@@ -1,7 +1,9 @@
 {% extends "/templates/base.html" %}
-{% block content %}
+
+{% block jumbo %}
+<div class="row bigblue">
+
 <div class="col-md-6 col-md-offset-3 text-center">
-	<div class="row" >
 		<h2>Search for a Team</h2>
 		<div class="input-group">
 	      <div class="input-group-btn">
@@ -13,8 +15,12 @@
 	      <input type="text" class="form-control">
 	    </div><!-- /input-group -->
 	    <br>
-	    
-	</div>
+	    <br>
+</div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="col-md-6 col-md-offset-3 text-center">
 	<div class="row">
 		<div class="team_results text-center">
 			<h3>Teams</h3>
@@ -31,6 +37,7 @@
   				{% endfor %}
   			</div>
 		</div>
+</div>
 </div>
 <script>
 $( document ).ready(function() {

@@ -2,6 +2,7 @@ from base import BaseHandler
 import json
 from models.models import *
 from google.appengine.api import mail
+import cgi
 
 class index(BaseHandler):
     def get(self):
@@ -67,14 +68,15 @@ class new_team(BaseHandler):
         
     def post(self):
         user = users.get_current_user()
-        team_name=self.request.get("team_name")
+        team_name=cgi.escape(self.request.get("team_name"))
+        team_color=cgi.escape(self.request.get("team_color"))
         player_names=[]
         #get player names
         for x in range(1,8):
-            name=self.request.get("player"+str(x))
+            name=cgi.escape(self.request.get("player"+str(x)))
             if name !="":
                 player_names.append(name)
-        new_team_key=create_team_players(user, player_names, team_name)
+        new_team_key=create_team_players(user, player_names, team_name,team_color)
         message = mail.EmailMessage(sender="marco.flowers12@gmail.com",subject="Welcome to Baylolesports")
         message.to = user.email()
         message.body = """
