@@ -3,10 +3,19 @@ import logging
 from google.appengine.api import users
 import json
 import urllib
+import os
 import urllib2
 import time
 from google.appengine.api import taskqueue
 import datetime
+from oauth2client.appengine import AppAssertionCredentials
+    
+import httplib2
+from apiclient import discovery
+from oauth2client import client
+from google.appengine.api import memcache
+
+
 
 
 class team(ndb.Model): #don't touch
@@ -38,6 +47,7 @@ class tournament(ndb.Model): #by no means final
     round5 = ndb.KeyProperty(repeated=True)
     round6 = ndb.KeyProperty(repeated=True)
     finalized = ndb.BooleanProperty()
+    calendar = ndb.StringProperty()
 
 
 
@@ -151,4 +161,14 @@ def check_name_team(team_name):
         return False
     else:
         return True
+
+def build_calendar_service():
+    dir = os.path.dirname(__file__)
+    client_secrets = json.load(open(dir + '/client_secrets.json'))
+    scope = 'https://www.googleapis.com/auth/calendar'
+    credentials = AppAssertionCredentials(scope=scope)
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('calendar', 'v3', http=http)
+    return service
+
 

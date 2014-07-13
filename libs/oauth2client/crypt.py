@@ -38,7 +38,6 @@ class AppIdentityError(Exception):
 try:
   from OpenSSL import crypto
 
-
   class OpenSSLVerifier(object):
     """Verifies the signature on a message."""
 

@@ -22,11 +22,9 @@ __author__ = ['rafek@google.com (Rafe Kaplan)',
 ]
 __all__ = [
   'positional',
-  'POSITIONAL_WARNING',
-  'POSITIONAL_EXCEPTION',
-  'POSITIONAL_IGNORE',
 ]
 
+import gflags
 import inspect
 import logging
 import types
@@ -40,13 +38,12 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-POSITIONAL_WARNING = 'WARNING'
-POSITIONAL_EXCEPTION = 'EXCEPTION'
-POSITIONAL_IGNORE = 'IGNORE'
-POSITIONAL_SET = frozenset([POSITIONAL_WARNING, POSITIONAL_EXCEPTION,
-                            POSITIONAL_IGNORE])
+FLAGS = gflags.FLAGS
 
-positional_parameters_enforcement = POSITIONAL_WARNING
+gflags.DEFINE_enum('positional_parameters_enforcement', 'WARNING',
+    ['EXCEPTION', 'WARNING', 'IGNORE'],
+    'The action when an oauth2client.util.positional declaration is violated.')
+
 
 def positional(max_positional_args):
   """A decorator to declare that only the first N arguments my be positional.
@@ -96,11 +93,10 @@ def positional(max_positional_args):
         def my_method(cls, pos1, kwonly1=None):
           ...
 
-  The positional decorator behavior is controlled by
-  util.positional_parameters_enforcement, which may be set to
-  POSITIONAL_EXCEPTION, POSITIONAL_WARNING or POSITIONAL_IGNORE to raise an
-  exception, log a warning, or do nothing, respectively, if a declaration is
-  violated.
+  The positional decorator behavior is controlled by the
+  --positional_parameters_enforcement flag. The flag may be set to 'EXCEPTION',
+  'WARNING' or 'IGNORE' to raise an exception, log a warning, or do nothing,
+  respectively, if a declaration is violated.
 
   Args:
     max_positional_arguments: Maximum number of positional arguments. All
@@ -111,9 +107,9 @@ def positional(max_positional_args):
     being used as positional parameters.
 
   Raises:
-    TypeError if a key-word only argument is provided as a positional
-    parameter, but only if util.positional_parameters_enforcement is set to
-    POSITIONAL_EXCEPTION.
+    TypeError if a key-word only argument is provided as a positional parameter,
+    but only if the --positional_parameters_enforcement flag is set to
+    'EXCEPTION'.
   """
   def positional_decorator(wrapped):
     def positional_wrapper(*args, **kwargs):
@@ -123,9 +119,9 @@ def positional(max_positional_args):
           plural_s = 's'
         message = '%s() takes at most %d positional argument%s (%d given)' % (
             wrapped.__name__, max_positional_args, plural_s, len(args))
-        if positional_parameters_enforcement == POSITIONAL_EXCEPTION:
+        if FLAGS.positional_parameters_enforcement == 'EXCEPTION':
           raise TypeError(message)
-        elif positional_parameters_enforcement == POSITIONAL_WARNING:
+        elif FLAGS.positional_parameters_enforcement == 'WARNING':
           logger.warning(message)
         else: # IGNORE
           pass

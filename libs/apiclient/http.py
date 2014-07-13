@@ -26,13 +26,10 @@ import base64
 import copy
 import gzip
 import httplib2
-import logging
 import mimeparse
 import mimetypes
 import os
-import random
 import sys
-import time
 import urllib
 import urlparse
 import uuid
@@ -509,19 +506,8 @@ class MediaIoBaseDownload(object):
     self._total_size = None
     self._done = False
 
-    # Stubs for testing.
-    self._sleep = time.sleep
-    self._rand = random.random
-
-  @util.positional(1)
-  def next_chunk(self, num_retries=0):
+  def next_chunk(self):
     """Get the next chunk of the download.
-
-    Args:
-      num_retries: Integer, number of times to retry 500's with randomized
-            exponential backoff. If all retries fail, the raised HttpError
-            represents the last request. If zero (default), we attempt the
-            request only once.
 
     Returns:
       (status, done): (MediaDownloadStatus, boolean)
@@ -537,21 +523,13 @@ class MediaIoBaseDownload(object):
             self._progress, self._progress + self._chunksize)
         }
     http = self._request.http
+    http.follow_redirects = False
 
-    for retry_num in xrange(num_retries + 1):
-      if retry_num > 0:
-        self._sleep(self._rand() * 2**retry_num)
-        logging.warning(
-            'Retry #%d for media download: GET %s, following status: %d'
-            % (retry_num, self._uri, resp.status))
-
-      resp, content = http.request(self._uri, headers=headers)
-      if resp.status < 500:
-        break
-
+    resp, content = http.request(self._uri, headers=headers)
+    if resp.status in [301, 302, 303, 307, 308] and 'location' in resp:
+        self._uri = resp['location']
+        resp, content = http.request(self._uri, headers=headers)
     if resp.status in [200, 206]:
-      if 'content-location' in resp and resp['content-location'] != self._uri:
-        self._uri = resp['content-location']
       self._progress += len(content)
       self._fd.write(content)
 
@@ -655,21 +633,13 @@ class HttpRequest(object):
     # The bytes that have been uploaded.
     self.resumable_progress = 0
 
-    # Stubs for testing.
-    self._rand = random.random
-    self._sleep = time.sleep
-
   @util.positional(1)
-  def execute(self, http=None, num_retries=0):
+  def execute(self, http=None):
     """Execute the request.
 
     Args:
       http: httplib2.Http, an http object to be used in place of the
             one the HttpRequest request object was constructed with.
-      num_retries: Integer, number of times to retry 500's with randomized
-            exponential backoff. If all retries fail, the raised HttpError
-            represents the last request. If zero (default), we attempt the
-            request only once.
 
     Returns:
       A deserialized object model of the response body as determined
@@ -681,46 +651,33 @@ class HttpRequest(object):
     """
     if http is None:
       http = self.http
-
     if self.resumable:
       body = None
       while body is None:
-        _, body = self.next_chunk(http=http, num_retries=num_retries)
+        _, body = self.next_chunk(http=http)
       return body
-
-    # Non-resumable case.
-
-    if 'content-length' not in self.headers:
-      self.headers['content-length'] = str(self.body_size)
-    # If the request URI is too long then turn it into a POST request.
-    if len(self.uri) > MAX_URI_LENGTH and self.method == 'GET':
-      self.method = 'POST'
-      self.headers['x-http-method-override'] = 'GET'
-      self.headers['content-type'] = 'application/x-www-form-urlencoded'
-      parsed = urlparse.urlparse(self.uri)
-      self.uri = urlparse.urlunparse(
-          (parsed.scheme, parsed.netloc, parsed.path, parsed.params, None,
-           None)
-          )
-      self.body = parsed.query
-      self.headers['content-length'] = str(len(self.body))
-
-    # Handle retries for server-side errors.
-    for retry_num in xrange(num_retries + 1):
-      if retry_num > 0:
-        self._sleep(self._rand() * 2**retry_num)
-        logging.warning('Retry #%d for request: %s %s, following status: %d'
-                        % (retry_num, self.method, self.uri, resp.status))
+    else:
+      if 'content-length' not in self.headers:
+        self.headers['content-length'] = str(self.body_size)
+      # If the request URI is too long then turn it into a POST request.
+      if len(self.uri) > MAX_URI_LENGTH and self.method == 'GET':
+        self.method = 'POST'
+        self.headers['x-http-method-override'] = 'GET'
+        self.headers['content-type'] = 'application/x-www-form-urlencoded'
+        parsed = urlparse.urlparse(self.uri)
+        self.uri = urlparse.urlunparse(
+            (parsed.scheme, parsed.netloc, parsed.path, parsed.params, None,
+             None)
+            )
+        self.body = parsed.query
+        self.headers['content-length'] = str(len(self.body))
 
       resp, content = http.request(str(self.uri), method=str(self.method),
                                    body=self.body, headers=self.headers)
-      if resp.status < 500:
-        break
-
-    for callback in self.response_callbacks:
-      callback(resp)
-    if resp.status >= 300:
-      raise HttpError(resp, content, uri=self.uri)
+      for callback in self.response_callbacks:
+        callback(resp)
+      if resp.status >= 300:
+        raise HttpError(resp, content, uri=self.uri)
     return self.postproc(resp, content)
 
   @util.positional(2)
@@ -736,7 +693,7 @@ class HttpRequest(object):
     self.response_callbacks.append(cb)
 
   @util.positional(1)
-  def next_chunk(self, http=None, num_retries=0):
+  def next_chunk(self, http=None):
     """Execute the next step of a resumable upload.
 
     Can only be used if the method being executed supports media uploads and
@@ -757,14 +714,6 @@ class HttpRequest(object):
         if status:
           print "Upload %d%% complete." % int(status.progress() * 100)
 
-
-    Args:
-      http: httplib2.Http, an http object to be used in place of the
-            one the HttpRequest request object was constructed with.
-      num_retries: Integer, number of times to retry 500's with randomized
-            exponential backoff. If all retries fail, the raised HttpError
-            represents the last request. If zero (default), we attempt the
-            request only once.
 
     Returns:
       (status, body): (ResumableMediaStatus, object)
@@ -789,19 +738,9 @@ class HttpRequest(object):
         start_headers['X-Upload-Content-Length'] = size
       start_headers['content-length'] = str(self.body_size)
 
-      for retry_num in xrange(num_retries + 1):
-        if retry_num > 0:
-          self._sleep(self._rand() * 2**retry_num)
-          logging.warning(
-              'Retry #%d for resumable URI request: %s %s, following status: %d'
-              % (retry_num, self.method, self.uri, resp.status))
-
-        resp, content = http.request(self.uri, method=self.method,
-                                     body=self.body,
-                                     headers=start_headers)
-        if resp.status < 500:
-          break
-
+      resp, content = http.request(self.uri, self.method,
+                                   body=self.body,
+                                   headers=start_headers)
       if resp.status == 200 and 'location' in resp:
         self.resumable_uri = resp['location']
       else:
@@ -853,23 +792,13 @@ class HttpRequest(object):
         # calculate the size when working with _StreamSlice.
         'Content-Length': str(chunk_end - self.resumable_progress + 1)
         }
-
-    for retry_num in xrange(num_retries + 1):
-      if retry_num > 0:
-        self._sleep(self._rand() * 2**retry_num)
-        logging.warning(
-            'Retry #%d for media upload: %s %s, following status: %d'
-            % (retry_num, self.method, self.uri, resp.status))
-
-      try:
-        resp, content = http.request(self.resumable_uri, method='PUT',
-                                     body=data,
-                                     headers=headers)
-      except:
-        self._in_error_state = True
-        raise
-      if resp.status < 500:
-        break
+    try:
+      resp, content = http.request(self.resumable_uri, 'PUT',
+                                   body=data,
+                                   headers=headers)
+    except:
+      self._in_error_state = True
+      raise
 
     return self._process_response(resp, content)
 
@@ -910,8 +839,6 @@ class HttpRequest(object):
       d['resumable'] = self.resumable.to_json()
     del d['http']
     del d['postproc']
-    del d['_sleep']
-    del d['_rand']
 
     return simplejson.dumps(d)
 
@@ -1235,7 +1162,7 @@ class BatchHttpRequest(object):
     headers['content-type'] = ('multipart/mixed; '
                                'boundary="%s"') % message.get_boundary()
 
-    resp, content = http.request(self._batch_uri, method='POST', body=body,
+    resp, content = http.request(self._batch_uri, 'POST', body=body,
                                  headers=headers)
 
     if resp.status >= 300:

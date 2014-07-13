@@ -24,15 +24,18 @@ object representation.
 
 __author__ = 'jcgregorio@google.com (Joe Gregorio)'
 
+import gflags
 import logging
 import urllib
 
-from apiclient import __version__
 from errors import HttpError
 from oauth2client.anyjson import simplejson
 
+FLAGS = gflags.FLAGS
 
-dump_request_response = False
+gflags.DEFINE_boolean('dump_request_response', False,
+                      'Dump all http server requests and responses. '
+                     )
 
 
 def _abstract():
@@ -103,7 +106,7 @@ class BaseModel(Model):
 
   def _log_request(self, headers, path_params, query, body):
     """Logs debugging information about the request if requested."""
-    if dump_request_response:
+    if FLAGS.dump_request_response:
       logging.info('--request-start--')
       logging.info('-headers-start-')
       for h, v in headers.iteritems():
@@ -141,7 +144,7 @@ class BaseModel(Model):
       headers['user-agent'] += ' '
     else:
       headers['user-agent'] = ''
-    headers['user-agent'] += 'google-api-python-client/%s (gzip)' % __version__
+    headers['user-agent'] += 'google-api-python-client/1.0'
 
     if body_value is not None:
       headers['content-type'] = self.content_type
@@ -174,7 +177,7 @@ class BaseModel(Model):
 
   def _log_response(self, resp, content):
     """Logs debugging information about the response if requested."""
-    if dump_request_response:
+    if FLAGS.dump_request_response:
       logging.info('--response-start--')
       for h, v in resp.iteritems():
         logging.info('%s: %s', h, v)
@@ -257,7 +260,6 @@ class JsonModel(BaseModel):
     return simplejson.dumps(body_value)
 
   def deserialize(self, content):
-    content = content.decode('utf-8')
     body = simplejson.loads(content)
     if self._data_wrapper and isinstance(body, dict) and 'data' in body:
       body = body['data']

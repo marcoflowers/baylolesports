@@ -25,3 +25,5 @@ libraries:
   version: latest
 - name: webapp2
   version: latest
+- name: pycrypto
+  version: "2.6"

@@ -5,6 +5,7 @@ import jinja2
 import logging
 from base import BaseHandler
 import json
+from google.appengine.api import users
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(""),
@@ -84,6 +85,8 @@ class new_tournament(BaseHandler):
             self.redirect(users.create_login_url(self.request.uri))
 
     def post(self):
+        service = build_calendar_service()
+
         name = self.request.get("tournament_name").encode()
         size = int(self.request.get("size").encode())
         new_tournament = tournament(name=name, size=size)
@@ -130,6 +133,21 @@ class new_tournament(BaseHandler):
         new_tournament.finalized = False
         new_tournament.admins.append(users.get_current_user())
         new_tournament.active = True
+        calendar = {}
+        calendar['kind'] = "calendar#calendar"
+        calendar['summary'] = name
+        calendar['timeZone'] = 'America/Los_Angeles'
+        response = service.calendars().insert(body=calendar).execute()
+        calendar_id = response['id']
+        body = {}
+        body['scope'] = {'type':'user', 'value':users.get_current_user().email()}
+        body['etag'] = '1'
+        body['role'] = 'writer'
+        service.acl().insert(calendarId=calendar_id, body=body).execute()
+        body['scope'] = {'type':'default','value':''}
+        body['role'] = 'reader'
+        service.acl().insert(calendarId=calendar_id, body=body).execute()
+        new_tournament.calendar = calendar_id
         key = new_tournament.put()
         self.redirect('/tournament/admin/' + key.urlsafe())
 

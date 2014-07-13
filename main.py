@@ -19,46 +19,17 @@ from webob import Request
 from google.appengine.api import mail
 import logging
 import time
-from oauth2client import appengine
-from controllers import home, team, tournament, calendar
+from controllers import home, team, tournament, queue
 import httplib2
 import logging
 import os
-from apiclient import discovery
-from oauth2client import appengine
-from oauth2client import client
-from google.appengine.api import memcache
+
+# to allow service building, run appserver with this command:
+# python $gae/dev_appserver.py ~/projects/baylolesports/ --appidentity_email_address=64791344032-c65sddh2n9opu1peb8f2nlkr9rhsvr6e@developer.gserviceaccount.com --appidentity_private_key_path=/home/adrian/projects/baylolesports/models/private_key.pem
 
 
 
 
-
-
-from controllers import home, team, tournament, queue
-
-CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), 'controllers/client_secrets.json')
-
-MISSING_CLIENT_SECRETS_MESSAGE = """
-<h1>Warning: Please configure OAuth 2.0</h1>
-<p>
-To make this sample run you will need to populate the client_secrets.json file
-found at:
-</p>
-<p>
-<code>%s</code>.
-</p>
-<p>with information found on the <a
-href="https://code.google.com/apis/console">APIs Console</a>.
-</p>
-""" % CLIENT_SECRETS
-
-decorator = appengine.oauth2decorator_from_clientsecrets(
-    CLIENT_SECRETS,
-    scope=[
-      'https://www.googleapis.com/auth/calendar',
-      'https://www.googleapis.com/auth/calendar.readonly',
-    ],
-    message=MISSING_CLIENT_SECRETS_MESSAGE)
 
 app = webapp2.WSGIApplication([
     ('/', home.index),
@@ -75,7 +46,4 @@ app = webapp2.WSGIApplication([
     ('/tournament/index', tournament.index),
     ('/tournament/admin/(.*)', tournament.admin_page),
     ('/tournament/(.*)', tournament.display_tournament),
-    ('/schedule/authorize', calendar.calendar),
-    ('/schedule/add_schedule', calendar.add_calendar),
-    (decorator.callback_path, decorator.callback_handler()),
 ], debug=True)
