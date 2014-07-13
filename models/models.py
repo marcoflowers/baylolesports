@@ -31,12 +31,17 @@ class tournament(ndb.Model): #by no means final
     size = ndb.IntegerProperty()
     join_requests = ndb.KeyProperty(repeated=True)
     games = ndb.KeyProperty(repeated=True)
+    round1 = ndb.KeyProperty(repeated=True)
+    round2 = ndb.KeyProperty(repeated=True)
+    round3 = ndb.KeyProperty(repeated=True)
+    round4 = ndb.KeyProperty(repeated=True)
+    round5 = ndb.KeyProperty(repeated=True)
+    round6 = ndb.KeyProperty(repeated=True)
     finalized = ndb.BooleanProperty()
 
 
 
 class game(ndb.Model):
-    round = ndb.IntegerProperty()
     spot = ndb.IntegerProperty()
     teams = ndb.KeyProperty(repeated=True)
     scheduled_date = ndb.DateTimeProperty()
@@ -60,46 +65,6 @@ def new_team(name, admin, members):
 def new_player(name, division, id):
     new_player = player(name=name, division=division, id=id)
     new_team.put()
-
-def new_tournament(name, size):
-    new_tournament = tournament(name=name, size=size)
-    placeholder_teams = []
-    for num in range(0, size):
-        new_team = team(name="Seed " + str(num + 1))
-        placeholder_teams.append(new_team)
-    for num in range(0, size/2):
-        round = 1
-        spot = num
-        teams = [placeholder_teams.pop(0).put(),placeholder_teams.pop(0).put()]
-        placeholder_game = game(round=round, spot=spot, teams=teams)
-        key = placeholder_game.put()
-        new_tournament.games.append(key)
-    if size >= 8:
-        for num in range(0, size/4):
-            round = 2
-            spot = num
-            teams = [team().put(), team().put()]
-            placeholder_game = game(round=round, spot=spot, teams=teams)
-            key = placeholder_game.put()
-            new_tournament.games.append(key)
-    if size >= 16:
-        for num in range(0, size/8):
-            round = 2
-            spot = num
-            teams = [team().put(), team().put()]
-            placeholder_game = game(round=round, spot=spot, teams=teams)
-            key = placeholder_game.put()
-            new_tournament.games.append(key)
-    if size == 32:
-        for num in range(0, size/16):
-            round = 2
-            spot = num
-            teams = [team().put(), team().put()]
-            place_holder_game = game(round=round, spot=spot, teams=teams)
-            key = placeholder_game.put()
-            new_tournament.games.append(key)
-    new_tournament.put()
-
 
         
 

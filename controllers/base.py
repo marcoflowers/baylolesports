@@ -44,6 +44,7 @@ class BaseHandler(webapp2.RequestHandler):
 		    'rank_to_url':rank_to_url,
 		    'get_login_url':get_login_url,
                     'get_ukey':get_ukey,
+                    'key_object':key_object,
 		}
 		if user:
                     self.template_values["user"]=user

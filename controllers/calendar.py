@@ -45,8 +45,9 @@ scope=[
       'https://www.googleapis.com/auth/calendar.readonly',
     ]
 user = users.get_current_user()
-storage = StorageByKeyName(Credentials, user.user_id(), 'credentials')
-credentials = storage.get()
+if(user):
+    storage = StorageByKeyName(Credentials, user.user_id(), 'credentials')
+    credentials = storage.get()
 #http = credentials.authorize(httplib2.Http(memcache))
 #service = discovery.build('calendar', 'v3', http=http)
 decorator = appengine.oauth2decorator_from_clientsecrets(

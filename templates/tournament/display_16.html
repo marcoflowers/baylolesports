@@ -1,0 +1,71 @@
+{% extends "/templates/tournament/display_base.html" %}
+
+{% block bracket_tab %}
+
+<div class="row">
+    <div class="col-md-11 col-md-offset-1">
+        <div class="tournament16-wrap">
+            <div class="round5-top winner5">{{key_object(key_object(tournament.round5[0]).teams[0]).name}}</div>
+            <div class="round4-topwrap">
+                <div class="round4-top">{{key_object(key_object(tournament.round4[0]).teams[0]).name}}</div>
+                <div class="round3-topwrap">
+                    <div class="round3-top">{{key_object(key_object(tournament.round3[0]).teams[0]).name}}</div>
+                    <div class="round2-topwrap">
+                        <div class="round2-top">{{key_object(key_object(tournament.round2[0]).teams[0]).name}}</div>
+                        <div class="round1-top">{{key_object(key_object(tournament.round1[0]).teams[0]).name}}</div>
+                        <div class="round1-bottom">{{key_object(key_object(tournament.round1[0]).teams[1]).name}}</div>
+                    </div>
+                    <div class="round2-bottomwrap">
+                        <div class="round2-bottom">{{key_object(key_object(tournament.round2[0]).teams[1]).name}}</div>
+                        <div class="round1-top">{{key_object(key_object(tournament.round1[1]).teams[0]).name}}</div>
+                        <div class="round1-bottom">{{key_object(key_object(tournament.round1[1]).teams[1]).name}}</div>
+                    </div>
+                </div>
+                <div class="round3-bottomwrap">
+                    <div class="round3-bottom">{{key_object(key_object(tournament.round3[0]).teams[1]).name}}</div>
+                    <div class="round2-topwrap">
+                        <div class="round2-top">{{key_object(key_object(tournament.round2[1]).teams[0]).name}}</div>
+                        <div class="round1-top">{{key_object(key_object(tournament.round1[2]).teams[0]).name}}</div>
+                        <div class="round1-bottom">{{key_object(key_object(tournament.round1[2]).teams[1]).name}}</div>
+                    </div>
+                    <div class="round2-bottomwrap">
+                        <div class="round2-bottom">{{key_object(key_object(tournament.round2[1]).teams[1]).name}}</div>
+                        <div class="round1-top">{{key_object(key_object(tournament.round1[3]).teams[0]).name}}</div>
+                        <div class="round1-bottom">{{key_object(key_object(tournament.round1[3]).teams[1]).name}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="round4-bottomwrap">
+                <div class="round4-bottom">{{key_object(key_object(tournament.round4[0]).teams[1]).name}}</div>
+                <div class="round3-topwrap">
+                    <div class="round3-top">{{key_object(key_object(tournament.round3[1]).teams[0]).name}}</div>
+                    <div class="round2-topwrap">
+                        <div class="round2-top">{{key_object(key_object(tournament.round2[2]).teams[0]).name}}</div>
+                        <div class="round1-top">{{key_object(key_object(tournament.round1[4]).teams[0]).name}}</div>
+                        <div class="round1-bottom">{{key_object(key_object(tournament.round1[4]).teams[1]).name}}</div>
+                    </div>
+                    <div class="round2-bottomwrap">
+                        <div class="round2-bottom">{{key_object(key_object(tournament.round2[2]).teams[1]).name}}</div>
+                        <div class="round1-top">{{key_object(key_object(tournament.round1[5]).teams[0]).name}}</div>
+                        <div class="round1-bottom">{{key_object(key_object(tournament.round1[5]).teams[1]).name}}</div>
+                    </div>
+                </div>
+                <div class="round3-bottomwrap">
+                    <div class="round3-bottom">{{key_object(key_object(tournament.round3[1]).teams[1]).name}}</div>
+                    <div class="round2-topwrap">
+                        <div class="round2-top">{{key_object(key_object(tournament.round2[3]).teams[0]).name}}</div>
+                        <div class="round1-top">{{key_object(key_object(tournament.round1[6]).teams[0]).name}}</div>
+                        <div class="round1-bottom">{{key_object(key_object(tournament.round1[6]).teams[1]).name}}</div>
+                    </div>
+                    <div class="round2-bottomwrap">
+                        <div class="round2-bottom">{{key_object(key_object(tournament.round2[3]).teams[1]).name}}</div>
+                        <div class="round1-top">{{key_object(key_object(tournament.round1[7]).teams[0]).name}}</div>
+                        <div class="round1-bottom">{{key_object(key_object(tournament.round1[7]).teams[1]).name}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -18,8 +18,19 @@ class display_tournament(BaseHandler):
         template_values = {}
         key = to_key(ukey)
         tournament = key_object(key)
+        user = users.get_current_user()
+        if user:
+            teams = team.query(team.admin==user).fetch()
+            template_values['teams'] = teams
         template_values['tournament'] = tournament
         self.render_template('/templates/tournament/display_%s.html' % tournament.size, template_values)
+    def post(self, ukey):
+        teams = self.request.get("join")
+        tournament = key_object(to_key(ukey))
+        for team in teams:
+            tournament.join_requests.append(to_key(team))
+        tournament.put()
+        
 
 class admin_page(BaseHandler):
     def get(self, ukey):
@@ -44,12 +55,6 @@ class admin_page(BaseHandler):
             game.bracket_spot = game_number
             game.teams[slot] = team
             game.put()
-        #    for position in range(1, tournament.size + 1):
-        #        team = self.request.get("1-" + str(position)
-        #        if(team):
-        #            game = tournament.games[position/2]
-        #            game.teams[position % 2] = to_key(team)
-        #            game.put()
         elif self.request.get("finalize_bracket"):
             tournament.finalized = True
             tournament.put()
@@ -65,55 +70,63 @@ class index(BaseHandler):
         query = tournament.query(tournament.active==True).order(-tournament.created)
         tournaments = query.fetch()
         template_values = {"tournaments":tournaments}
-        logging.info(tournaments)
         self.render_template('/templates/tournament/index.html', template_values) 
 
 
 class new_tournament(BaseHandler):
     def get(self):
         self.login()
-        template_values = {}
-        self.render_template('/templates/tournament/new_tournament.html', template_values)
+        user = users.get_current_user()
+        if user:
+            template_values = {}
+            self.render_template('/templates/tournament/new_tournament.html', template_values)
+        else:
+            self.redirect(users.create_login_url(self.request.uri))
 
     def post(self):
         name = self.request.get("tournament_name").encode()
         size = int(self.request.get("size").encode())
         new_tournament = tournament(name=name, size=size)
         placeholder_teams = []
-        for num in range(0, size):
+        for num in range(0, 32):
             new_team = team(name="Seed " + str(num + 1))
             placeholder_teams.append(new_team)
-        for num in range(0, size/2):
-            round = 1
+        for num in range(0, 16):
             spot = num
             teams = [placeholder_teams.pop(0).put(),placeholder_teams.pop(0).put()]
-            placeholder_game = game(round=round, spot=spot, teams=teams)
+            placeholder_game = game(spot=spot, teams=teams)
             key = placeholder_game.put()
-            new_tournament.games.append(key)
-        if size >= 8:
-            for num in range(0, size/4):
-                round = 2
-                spot = num
-                teams = [team().put(), team().put()]
-                placeholder_game = game(round=round, spot=spot, teams=teams)
-                key = placeholder_game.put()
-                new_tournament.games.append(key)
-        if size >= 16:
-            for num in range(0, size/8):
-                round = 2
-                spot = num
-                teams = [team().put(), team().put()]
-                placeholder_game = game(round=round, spot=spot, teams=teams)
-                key = placeholder_game.put()
-                new_tournament.games.append(key)
-        if size == 32:
-            for num in range(0, size/16):
-                round = 2
-                spot = num
-                teams = [team().put(), team().put()]
-                place_holder_game = game(round=round, spot=spot, teams=teams)
-                key = placeholder_game.put()
-                new_tournament.games.append(key)
+            new_tournament.round1.append(key)
+        for num in range(0, 8):
+            spot = num
+            teams = [team().put(), team().put()]
+            placeholder_game = game(spot=spot, teams=teams)
+            key = placeholder_game.put()
+            new_tournament.round2.append(key)
+        for num in range(0, 4):
+            spot = num
+            teams = [team().put(), team().put()]
+            placeholder_game = game(spot=spot, teams=teams)
+            key = placeholder_game.put()
+            new_tournament.round3.append(key)
+        for num in range(0, 2):
+            spot = num
+            teams = [team().put(), team().put()]
+            place_holder_game = game(spot=spot, teams=teams)
+            key = placeholder_game.put()
+            new_tournament.round4.append(key)
+        for num in range(0, 1):
+            spot = num
+            teams = [team().put(), team().put()]
+            place_holder_game = game(spot=spot, teams=teams)
+            key = placeholder_game.put()
+            new_tournament.round5.append(key)
+        spot = 0
+        teams = [team().put(), team().put()]
+        place_holder_game = game(spot=spot, teams=teams)
+        key = placeholder_game.put()
+        new_tournament.round6.append(key)
+
         new_tournament.finalized = False
         new_tournament.admins.append(users.get_current_user())
         new_tournament.active = True

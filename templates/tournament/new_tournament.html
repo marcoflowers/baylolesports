@@ -59,7 +59,7 @@ $( document ).ready(function() {
 		$("button").button('loading')
 	});
 	$("button").button('loading')
-        $("select").focusout(function(){
+        $("select").change(function(){
             $(this).parent().removeClass("has-error");
             $(this).parent().removeClass("has-success");
             $(this).parent().children("label").children("small").remove();
