@@ -45,13 +45,14 @@ class tournament(ndb.Model): #by no means final
     round3 = ndb.KeyProperty(repeated=True)
     round4 = ndb.KeyProperty(repeated=True)
     round5 = ndb.KeyProperty(repeated=True)
-    round6 = ndb.KeyProperty(repeated=True)
+    winner = ndb.KeyProperty()
     finalized = ndb.BooleanProperty()
     calendar = ndb.StringProperty()
 
 
 
 class game(ndb.Model):
+    round = ndb.IntegerProperty()
     spot = ndb.IntegerProperty()
     teams = ndb.KeyProperty(repeated=True)
     scheduled_date = ndb.DateTimeProperty()
@@ -85,6 +86,8 @@ def get_ukey(object):
 
 def to_key(ukey):
     return ndb.Key(urlsafe=ukey)
+def to_ukey(key):
+    return key.urlsafe()
 
 def key_object(key):
     return key.get()

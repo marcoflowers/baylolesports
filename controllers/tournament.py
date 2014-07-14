@@ -94,41 +94,47 @@ class new_tournament(BaseHandler):
         for num in range(0, 32):
             new_team = team(name="Seed " + str(num + 1))
             placeholder_teams.append(new_team)
-        for num in range(0, 16):
-            spot = num
-            teams = [placeholder_teams.pop(0).put(),placeholder_teams.pop(0).put()]
-            placeholder_game = game(spot=spot, teams=teams)
-            key = placeholder_game.put()
-            new_tournament.round1.append(key)
-        for num in range(0, 8):
-            spot = num
-            teams = [team().put(), team().put()]
-            placeholder_game = game(spot=spot, teams=teams)
-            key = placeholder_game.put()
-            new_tournament.round2.append(key)
+        round = 0
+        if(size == 32):
+            round -= 1
+            for num in range(0, 16):
+                spot = num
+                teams = [placeholder_teams.pop(0).put(),placeholder_teams.pop(0).put()]
+                placeholder_game = game(spot=spot, round=round, teams=teams)
+                key = placeholder_game.put()
+                new_tournament.round1.append(key)
+        if(size >= 16):
+            round -= 1
+            for num in range(0, 8):
+                spot = num
+                teams = [team().put(), team().put()]
+                placeholder_game = game(spot=spot, round=round, teams=teams)
+                key = placeholder_game.put()
+                new_tournament.round2.append(key)
+        if(size >= 8):
+            round -= 1
         for num in range(0, 4):
             spot = num
             teams = [team().put(), team().put()]
-            placeholder_game = game(spot=spot, teams=teams)
+            placeholder_game = game(spot=spot, round=round, teams=teams)
             key = placeholder_game.put()
             new_tournament.round3.append(key)
-        for num in range(0, 2):
-            spot = num
-            teams = [team().put(), team().put()]
-            place_holder_game = game(spot=spot, teams=teams)
-            key = placeholder_game.put()
-            new_tournament.round4.append(key)
+        if(size >= 4):
+            round -= 1
+            for num in range(0, 2):
+                spot = num
+                teams = [team().put(), team().put()]
+                place_holder_game = game(spot=spot, round=round, teams=teams)
+                key = placeholder_game.put()
+                new_tournament.round4.append(key)
+        round -= 1
         for num in range(0, 1):
             spot = num
             teams = [team().put(), team().put()]
-            place_holder_game = game(spot=spot, teams=teams)
+            place_holder_game = game(spot=spot, round=round, teams=teams)
             key = placeholder_game.put()
             new_tournament.round5.append(key)
-        spot = 0
-        teams = [team().put(), team().put()]
-        place_holder_game = game(spot=spot, teams=teams)
-        key = placeholder_game.put()
-        new_tournament.round6.append(key)
+        new_tournament.winner = team().put()
 
         new_tournament.finalized = False
         new_tournament.admins.append(users.get_current_user())

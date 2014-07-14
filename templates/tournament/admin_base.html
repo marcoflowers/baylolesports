@@ -23,10 +23,10 @@
         <li class="active"><a href="#bracket" data-toggle="tab">Bracket</a></li>
     {% endif %}
     <li><a href="#teams" data-toggle="tab">Teams</a></li>
-    {% if tournament.finalized %}
+    {#% if tournament.finalized %#}
         <li><a href="#schedule" data-toggle="tab">Schedule</a></li>
         <li><a href="#results" data-toggle="tab">Game Results</a></li>
-    {% endif %}
+    {#% endif %#}
     <li><a href="#settings" data-toggle="tab">Settings</a></li>
 </ul>
 
@@ -92,21 +92,21 @@
             </div>
         </div>
     </div>
-    {% if tournament.finalized %}
+    {#% if tournament.finalized %#}
     <div class="tab-pane" id="schedule">
         <div class="col-md-2">
             <ul id="tabs" class="nav nav-tabs nav-stacked">
-                {% for game in tournament.games %}
-                    {% if game.happened != True %}
-                        <li><a href="#{{ get_ukey(game) }}">Round {{ game.round }} Game {{ game.spot }}</a></li>
-                    {% endif %}
-                {% endfor %}
+            {% for game in tournament.round1 %}
+                {% if game.happened != True %}
+                    <li><a href="#{{ to_ukey(game)}}">Round{{ key_object(game).round }} Game{{ key_object(game).spot }}</a></li>
+                {% endif %}
+            {% endfor %}
             </ul>
         </div>
         <div class="col-md-2 tab-content">
-            {% for game in tournament.games %}
+            {% for game in tournament.round1 %}
                 {% if game.happened != True %}
-                    <div class="tab-pane" id="{{ get_ukey(game) }}">
+                    <div class="tab-pane" id="{{ to_ukey(key) }}">
                         Set Date and Time:<br>
                         <form action="POST">
                             <input type="date" name="scheduled_date"><br>
@@ -142,7 +142,7 @@
             {% endfor %}
         </div>
     </div>
-    {% endif %}
+    {#% endif %#}
     <div class="tab-pane" id="settings">
     </div>
 
