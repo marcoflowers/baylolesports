@@ -96,6 +96,7 @@
     <div class="tab-pane" id="schedule">
         <div class="col-md-2">
             <ul id="tabs" class="nav nav-tabs nav-stacked">
+                <li><a href="#calendar">Calendar</a></li>
                 {% for game in tournament.games %}
                     {% if game.happened != True %}
                         <li><a href="#{{ get_ukey(game) }}">Round {{ game.round }} Game {{ game.spot }}</a></li>
@@ -104,6 +105,9 @@
             </ul>
         </div>
         <div class="col-md-2 tab-content">
+            <div class="tab-pane" id="calendar">
+                <iframe src="https://www.google.com/calendar/embed?src={{tournament.calendar}}" style="height:400;min-width:100%;"></iframe>
+            </div>
             {% for game in tournament.games %}
                 {% if game.happened != True %}
                     <div class="tab-pane" id="{{ get_ukey(game) }}">
