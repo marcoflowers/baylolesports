@@ -54,8 +54,8 @@ class tournament(ndb.Model): #by no means final
 class game(ndb.Model):
     spot = ndb.IntegerProperty()
     teams = ndb.KeyProperty(repeated=True)
-    scheduled_date = ndb.DateTimeProperty()
     happened = ndb.BooleanProperty()
+    winner = ndb.KeyProperty()
 
 class player_stats(ndb.Model):
     ranked_stats = ndb.JsonProperty()
