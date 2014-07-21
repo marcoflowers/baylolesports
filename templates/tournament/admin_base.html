@@ -3,16 +3,14 @@
 
 {% block head %}
 
-<script src="/static/js/drag_drop.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
-<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
-<script type="text/javascript" src="/static/bootstrap/js/bootstrap.js"></script>
-<!--script type="text/javascript" src="../static/js/bootstrap-tab.js"></script-->
+<link rel="stylesheet" href="/static/datepicker/css/datepicker.css">
+<link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
 
 {% endblock %}
 
 
 {% block content %}
+
 
 <div id="content">
 <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
@@ -93,25 +91,35 @@
         </div>
     </div>
     {#% if tournament.finalized %#}
-    <div class="tab-pane" id="schedule">
+    <div class="tab-pane row" id="schedule">
         <div class="col-md-2">
             <ul id="tabs" class="nav nav-tabs nav-stacked">
-            {% for game in tournament.round1 %}
-                {% if game.happened != True %}
-                    <li><a href="#{{ to_ukey(game)}}">Round{{ key_object(game).round }} Game{{ key_object(game).spot }}</a></li>
-                {% endif %}
-            {% endfor %}
+                <li><a href="#calendar" data-toggle="tab">Calendar</a></li>
+                {% for game in tournament.rounds[tournament.current_round - 1].games %}
+                    {% if key_object(game).happened != True %}
+                        <li><a href="#{{ to_ukey(game) }}" data-toggle="tab">Round {{ tournament.current_round  }} Game {{ loop.index }}</a></li>
+                    {% endif %}
+                {% endfor %}
             </ul>
         </div>
-        <div class="col-md-2 tab-content">
-            {% for game in tournament.round1 %}
-                {% if game.happened != True %}
-                    <div class="tab-pane" id="{{ to_ukey(key) }}">
-                        Set Date and Time:<br>
-                        <form action="POST">
-                            <input type="date" name="scheduled_date"><br>
-                            <input type="submit" value="Schedule">
-                        </form>
+        <div class="col-md-10 tab-content">
+            <div class="tab-pane active" id="calendar">
+                <iframe src="https://www.google.com/calendar/embed?src={{tournament.calendar}}" style="height:400;width:100%;"></iframe>
+            </div>
+            {% for game in tournament.rounds[tournament.current_round - 1].games %}
+                {% if key_object(game).happened != True %}
+                    <div class="tab-pane" id="{{ to_ukey(game) }}">
+                        <div class="col-md-3">
+                            Set Date and Time:<br>
+
+                            <div id="dp6" class="test" data-date="12-02-2012" data-date-format="dd-mm-yyyy"></div>
+                            <input type="checkbox" name="notifications">Send Email Notifications<br>
+                            <input type="submit" name="Schedule">
+                        </div>
+                        <div class="col-md-4">
+                            {{ key_object(key_object(game).teams[0]).name }}<br>
+                            {{ key_object(key_object(game).teams[1]).name }}
+                        </div>
                     </div>
                 {% endif %}
             {% endfor %}
@@ -147,11 +155,19 @@
     </div>
 
 </div>
-    <script type="text/javascript">
-        jQuery(document).ready(function ($) {
-            $('#tabs').tab();
-        });
-    </script>
+<script src="/static/js/drag_drop.js"></script>
+<script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/static/datepicker/js/bootstrap-datepicker.js"></script>
+
+<script type="text/javascript">
+</script>
+<script type="text/javascript">
+    $(document).ready(function ($) {
+        $('#tabs').tab();
+        $('#dp6').datepicker();
+    });
+</script>
+
 
 
 {% endblock %}

@@ -44,6 +44,7 @@ app = webapp2.WSGIApplication([
     ('/tournament/check_name/(.*)', tournament.check_name),
     ('/tournament/new', tournament.new_tournament),
     ('/tournament/index', tournament.index),
+    ('/tournament/post/(.*)', tournament.post),
     ('/tournament/admin/(.*)', tournament.admin_page),
     ('/tournament/(.*)', tournament.display_tournament),
 ], debug=True)

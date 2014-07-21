@@ -5,6 +5,7 @@ import jinja2
 import logging
 from base import BaseHandler
 import json
+from math import log
 from google.appengine.api import users
 
 JINJA_ENVIRONMENT = jinja2.Environment(
@@ -40,13 +41,15 @@ class admin_page(BaseHandler):
         key = to_key(ukey)
         tournament = key_object(key)
         template_values['tournament'] = tournament
-        #size = ukey
-        #template_values["size"] = size
+        template_values['log'] = log
         self.render_template('/templates/tournament/admin_%s.html' % tournament.size, template_values)
 
+class post:
     def post(self, ukey):
-        logging.info("Data Saved")
+        user = users.get_current_user()
         tournament = key_object(to_key(ukey))
+        if(user not in tournament.admins):
+            self.redirect('/tournament/%s' % ukey)
         if self.request.get("save_bracket"):
             position = self.request.get("position").split("-")
             game_number = int(position[0])
@@ -59,10 +62,14 @@ class admin_page(BaseHandler):
         elif self.request.get("finalize_bracket"):
             tournament.finalized = True
             tournament.put()
-        #elif self.request.get("join"):
-        #elif self.request.get("settings"):
-        #elif self.request.get("schedule"):
-        #elif self.request.get("results"):
+        elif self.request.get("join"):
+            pass
+        elif self.request.get("settings"):
+            pass
+        elif self.request.get("schedule"):
+            pass
+        elif self.request.get("results"):
+            pass
 
 
 class index(BaseHandler):
@@ -90,52 +97,45 @@ class new_tournament(BaseHandler):
         name = self.request.get("tournament_name").encode()
         size = int(self.request.get("size").encode())
         new_tournament = tournament(name=name, size=size)
-        placeholder_teams = []
-        for num in range(0, 32):
-            new_team = team(name="Seed " + str(num + 1))
-            placeholder_teams.append(new_team)
-        round = 0
-        if(size == 32):
-            round -= 1
-            for num in range(0, 16):
-                spot = num
-                teams = [placeholder_teams.pop(0).put(),placeholder_teams.pop(0).put()]
-                placeholder_game = game(spot=spot, round=round, teams=teams)
-                key = placeholder_game.put()
-                new_tournament.round1.append(key)
-        if(size >= 16):
-            round -= 1
-            for num in range(0, 8):
-                spot = num
-                teams = [team().put(), team().put()]
-                placeholder_game = game(spot=spot, round=round, teams=teams)
-                key = placeholder_game.put()
-                new_tournament.round2.append(key)
-        if(size >= 8):
-            round -= 1
-        for num in range(0, 4):
-            spot = num
-            teams = [team().put(), team().put()]
-            placeholder_game = game(spot=spot, round=round, teams=teams)
-            key = placeholder_game.put()
-            new_tournament.round3.append(key)
-        if(size >= 4):
-            round -= 1
-            for num in range(0, 2):
-                spot = num
-                teams = [team().put(), team().put()]
-                place_holder_game = game(spot=spot, round=round, teams=teams)
-                key = placeholder_game.put()
-                new_tournament.round4.append(key)
-        round -= 1
-        for num in range(0, 1):
-            spot = num
-            teams = [team().put(), team().put()]
-            place_holder_game = game(spot=spot, round=round, teams=teams)
-            key = placeholder_game.put()
-            new_tournament.round5.append(key)
-        new_tournament.winner = team().put()
+        tournament_key = new_tournament.put()
+        placeholder_team = team.query(team.name=="None").fetch()
+        try:
+            team_key = placeholder_team[0].key()
+        except:
+            team_key = team(name="None").put()
+        teams = [team_key, team_key]
 
+        round1 = round(round=1, games=[])
+        for num in range(0, size / 2):
+            round1.games.append(game(teams=teams, tournament=tournament_key).put())
+        new_tournament.rounds.append(round1)
+
+        round2 = round(round=2, games=[])
+        for num in range(0, size / 4):
+            round2.games.append(game(teams=teams, tournament=tournament_key).put())
+        new_tournament.rounds.append(round2)
+
+        if(size / 8 > 0):
+            round3 = round(round=3, games=[])
+            for num in range(0, size / 8):
+                round3.games.append(game(teams=teams, tournament=tournament_key).put())
+            new_tournament.rounds.append(round3)
+
+        if(size / 16 > 0):
+            round4 = round(round=4, games=[])
+            for num in range(0, size / 16):
+                round4.games.append(game(teams=teams, tournament=tournament_key).put())
+            new_tournament.rounds.append(round4)
+
+        if(size / 32 > 0):
+            round5 = round(round=5, games=[])
+            for num in range(0, size / 32):
+                round5.games.append(game(teams=teams, tournament=tournament_key).put())
+            new_tournament.rounds.append(round5)
+
+
+        new_tournament.winner = team_key
+        new_tournament.current_round = 1
         new_tournament.finalized = False
         new_tournament.admins.append(users.get_current_user())
         new_tournament.active = True

@@ -31,6 +31,10 @@ class player(ndb.Model): #don't touch
     created = ndb.DateTimeProperty(auto_now_add=True)
     user = ndb.UserProperty()
 
+class round(ndb.Model):
+    round = ndb.IntegerProperty()
+    games = ndb.KeyProperty(repeated=True)
+
 class tournament(ndb.Model): #by no means final
     name = ndb.StringProperty()
     active = ndb.BooleanProperty()
@@ -39,24 +43,19 @@ class tournament(ndb.Model): #by no means final
     teams = ndb.KeyProperty(repeated=True)
     size = ndb.IntegerProperty()
     join_requests = ndb.KeyProperty(repeated=True)
-    games = ndb.KeyProperty(repeated=True)
-    round1 = ndb.KeyProperty(repeated=True)
-    round2 = ndb.KeyProperty(repeated=True)
-    round3 = ndb.KeyProperty(repeated=True)
-    round4 = ndb.KeyProperty(repeated=True)
-    round5 = ndb.KeyProperty(repeated=True)
+    rounds = ndb.LocalStructuredProperty(round, repeated=True)
+    current_round = ndb.IntegerProperty()
     winner = ndb.KeyProperty()
     finalized = ndb.BooleanProperty()
     calendar = ndb.StringProperty()
 
-
-
 class game(ndb.Model):
     round = ndb.IntegerProperty()
-    spot = ndb.IntegerProperty()
+    tournament = ndb.KeyProperty()
     teams = ndb.KeyProperty(repeated=True)
-    scheduled_date = ndb.DateTimeProperty()
     happened = ndb.BooleanProperty()
+    event_id = ndb.StringProperty()
+    winner = ndb.KeyProperty()
 
 class player_stats(ndb.Model):
     ranked_stats = ndb.JsonProperty()
