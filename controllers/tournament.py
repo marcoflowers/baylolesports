@@ -7,6 +7,7 @@ from base import BaseHandler
 import json
 from math import log
 from google.appengine.api import users
+from datetime import datetime
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(""),
@@ -66,10 +67,67 @@ class post:
             pass
         elif self.request.get("settings"):
             pass
-        elif self.request.get("schedule"):
-            pass
         elif self.request.get("results"):
             pass
+
+class events:
+    def __init__(self):
+        self.service = build_calendar_service()
+    def get(self, ukey):
+        tournament = tournament.get(to_key(ukey))
+        calendar_id = tournament.calendar
+        list = self.service.events().list(calendar_id=calendar_id).execute()
+        nextPageToken = list['nextPageToken']
+        nextSyncToken = list['nextSyncToken']
+        events = list['items']
+        games = []
+        for event in events:
+            game = {}
+            game['id'] = event['etag']
+            game_datetime= event['start']['datetime'].split('T')
+            game_time = game_datetime[1][0:5]
+            game_date = game_datetime[0].replace('-', '/')
+            game['time'] = game_time
+            game['date'] = game_date
+            games.append(game)
+        return games
+
+    def post(self, ukey):
+        #
+        # etag should give useful info about placement of game
+        # the POST should include:
+        # [notifications, game]
+        tournament = tournament.get(to_key(ukey))
+        notifications = self.request.get("notifications")
+        game = self.request.get("game_ukey")
+        calendar_id = tournament.calendar
+        game = key_object(game_ukey)
+        teams = [key_object(game.teams[0]), key_object(game.teams[1])]
+        attendees = []
+        for team in teams:
+            for player in team.members:
+                email = player.user.email()
+                attendee = {
+                    'displayName':player.name,
+                    'email':email,
+                    'response_status':'needsAction'
+                }
+                attendees.append(attendee)
+        body = {
+            'attendees': attendees,
+            'start': {
+                'date':, #yyyy-mm-dd
+                'dateTime':, #yyyy-mm-ddThh:mm:ss
+            },
+            'etag':round + "-" + game_num,#round-game_num, #Gives useful info about game round and spot
+            'visibility':'public',
+            'kind':'calendar#event',
+
+        }
+
+        calendar_id = tournament.get(to_key(ukey)).calendar
+        self.service.events().insert(calendar_id=calendar_id, body=body, sendNotifications=notifications).execute()
+        return {"success":True}
 
 
 class index(BaseHandler):

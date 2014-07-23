@@ -111,10 +111,9 @@
                     <div class="tab-pane" id="{{ to_ukey(game) }}">
                         <div class="col-md-3">
                             Set Date and Time:<br>
-
-                            <div id="dp6" class="test" data-date="12-02-2012" data-date-format="dd-mm-yyyy"></div>
-                            <input type="checkbox" name="notifications">Send Email Notifications<br>
-                            <input type="submit" name="Schedule">
+                            <div id="dp6"  class="{{to_ukey(game)}}" data-date="" data-date-format="yyyy-mm-dd"></div>
+                            <input class="{{to_ukey(game)}}" type="checkbox" name="notifications">Send Email Notifications<br>
+                            <button class="{{to_ukey(game)}}">Schedule Game</button>
                         </div>
                         <div class="col-md-4">
                             {{ key_object(key_object(game).teams[0]).name }}<br>
