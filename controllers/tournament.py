@@ -113,20 +113,20 @@ class events:
                     'response_status':'needsAction'
                 }
                 attendees.append(attendee)
-        body = {
-            'attendees': attendees,
-            'start': {
-                'date':, #yyyy-mm-dd
-                'dateTime':, #yyyy-mm-ddThh:mm:ss
-            },
-            'etag':round + "-" + game_num,#round-game_num, #Gives useful info about game round and spot
-            'visibility':'public',
-            'kind':'calendar#event',
+        #body = {
+        #    'attendees': attendees,
+        #    'start': {
+        #        'date':, #yyyy-mm-dd
+        #        'dateTime':, #yyyy-mm-ddThh:mm:ss
+        #    },
+        #    'etag':round + "-" + game_num,#round-game_num, #Gives useful info about game round and spot
+        #    'visibility':'public',
+        #    'kind':'calendar#event',
 
-        }
+#        }
 
-        calendar_id = tournament.get(to_key(ukey)).calendar
-        self.service.events().insert(calendar_id=calendar_id, body=body, sendNotifications=notifications).execute()
+#        calendar_id = tournament.get(to_key(ukey)).calendar
+#        self.service.events().insert(calendar_id=calendar_id, body=body, sendNotifications=notifications).execute()
         return {"success":True}
 
 

@@ -3,9 +3,10 @@
 
 {% block head %}
 
-<link rel="stylesheet" href="/static/datepicker/css/datepicker.css">
-<link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
-
+<link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/css/bootstrap-combined.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" media="screen"
+    href="/static/css/bootstrap-datetimepicker.min.css">
 {% endblock %}
 
 
@@ -111,7 +112,12 @@
                     <div class="tab-pane" id="{{ to_ukey(game) }}">
                         <div class="col-md-3">
                             Set Date and Time:<br>
-                            <div id="dp6"  class="{{to_ukey(game)}}" data-date="" data-date-format="yyyy-mm-dd"></div>
+                            <div id="datetimepicker" class="input-append date {{loop.index}}">
+                                <input type="text"></input>
+                                <span class="add-on">
+                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                </span>
+                            </div>
                             <input class="{{to_ukey(game)}}" type="checkbox" name="notifications">Send Email Notifications<br>
                             <button class="{{to_ukey(game)}}">Schedule Game</button>
                         </div>
@@ -155,15 +161,14 @@
 
 </div>
 <script src="/static/js/drag_drop.js"></script>
-<script type="text/javascript" src="/static/js/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="/static/datepicker/js/bootstrap-datepicker.js"></script>
+
 
 <script type="text/javascript">
-</script>
-<script type="text/javascript">
-    $(document).ready(function ($) {
-        $('#tabs').tab();
-        $('#dp6').datepicker();
+    $(function() {
+        console.log($('#schedule').find('datetimepicker'));
+        $('#schedule').find('datetimepicker').each(function(index, object) {
+            console.log(index);
+        });
     });
 </script>
 

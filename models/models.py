@@ -165,8 +165,6 @@ def check_name_team(team_name):
         return True
 
 def build_calendar_service():
-    dir = os.path.dirname(__file__)
-    client_secrets = json.load(open(dir + '/client_secrets.json'))
     scope = 'https://www.googleapis.com/auth/calendar'
     credentials = AppAssertionCredentials(scope=scope)
     http = credentials.authorize(httplib2.Http())
