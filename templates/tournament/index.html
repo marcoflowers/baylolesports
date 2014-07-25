@@ -10,6 +10,18 @@
     <div class="tournament">
         <a href="/tournament/{{get_ukey(tournament)}}">{{tournament.name}}</a>
     </div>
+    <div class="row">
+        <div class="team_results text-center">
+            <br><br>
+            <h3>Tournaments</h3><br>
+            <div class="list-group">
+                {% for tournament in tournaments %}
+                    <a href="/tournament/{{get_ukey(tournament)}}" class="list-group-item">{{tournament.name}}</a><br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
 
 {% endfor %}
 

@@ -4,9 +4,8 @@
 {% block head %}
 
 <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<link href="/static/css/bootstrap-combined.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" media="screen"
-    href="/static/css/bootstrap-datetimepicker.min.css">
+    href="/static/css/datetimepicker.css">
 {% endblock %}
 
 
@@ -112,6 +111,9 @@
                     <div class="tab-pane" id="{{ to_ukey(game) }}">
                         <div class="col-md-3">
                             Set Date and Time:<br>
+                            <div class="input-append date datepicker no-padding" data-date-format="dd-mm-yyyy">
+                                <input class="input-medium" size="16" type="text"><span class="add-on"><i class="icon-th"></i></span>
+                            </div>
                             <div id="datetimepicker" class="input-append date {{loop.index}}">
                                 <input type="text"></input>
                                 <span class="add-on">
@@ -161,12 +163,13 @@
 
 </div>
 <script src="/static/js/drag_drop.js"></script>
+<script src="/static/js/bootstrap-datepicker.js"></script>
 
 
 <script type="text/javascript">
     $(function() {
-        console.log($('#schedule').find('datetimepicker'));
-        $('#schedule').find('datetimepicker').each(function(index, object) {
+        console.log($('#schedule').find('datepicker'));
+        $('#schedule').find('datepicker').each(function(index, object) {
             console.log(index);
         });
     });

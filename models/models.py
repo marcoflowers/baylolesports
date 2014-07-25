@@ -23,6 +23,7 @@ class team(ndb.Model): #don't touch
     members = ndb.KeyProperty(repeated=True)
     admin = ndb.UserProperty()
     created = ndb.DateTimeProperty(auto_now_add=True)
+    tournaments = ndb.KeyProperty()
 
 class player(ndb.Model): #don't touch
     # query with player.get_by_id(id)
@@ -48,6 +49,11 @@ class tournament(ndb.Model): #by no means final
     winner = ndb.KeyProperty()
     finalized = ndb.BooleanProperty()
     calendar = ndb.StringProperty()
+    description = ndb.KeyProperty()
+
+class tournament_descriptions(ndb.Model):
+    tournament = ndb.KeyProperty()
+    description = ndb.TextProperty()
 
 class game(ndb.Model):
     round = ndb.IntegerProperty()

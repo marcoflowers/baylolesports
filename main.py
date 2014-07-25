@@ -25,9 +25,7 @@ import logging
 import os
 
 # to allow service building, run appserver with this command:
-# python $gae/dev_appserver.py ~/projects/baylolesports/
-#--appidentity_email_address=64791344032-c65sddh2n9opu1peb8f2nlkr9rhsvr6e@developer.gserviceaccount.com 
-#--appidentity_private_key_path=/home/adrian/projects/baylolesports/models/private_key.pem
+# python $gae/dev_appserver.py ~/projects/baylolesports/ --appidentity_email_address=64791344032-c65sddh2n9opu1peb8f2nlkr9rhsvr6e@developer.gserviceaccount.com --appidentity_private_key_path=/home/adrian/projects/baylolesports/models/private_key.pem
 
 
 
@@ -43,6 +41,7 @@ app = webapp2.WSGIApplication([
     ('/team', team.index),
     ('/queue/update_stats', queue.update_stats),
     ('/queue/player_stats', queue.player_stats_handler),
+    ('/tournament/events', tournament.events),
     ('/tournament/check_name/(.*)', tournament.check_name),
     ('/tournament/new', tournament.new_tournament),
     ('/tournament/index', tournament.index),
