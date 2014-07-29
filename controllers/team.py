@@ -69,14 +69,13 @@ class new_team(BaseHandler):
     def post(self):
         user = users.get_current_user()
         team_name=cgi.escape(self.request.get("team_name"))
-        team_color=cgi.escape(self.request.get("team_color"))
         player_names=[]
         #get player names
         for x in range(1,8):
             name=cgi.escape(self.request.get("player"+str(x)))
             if name !="":
                 player_names.append(name)
-        new_team_key=create_team_players(user, player_names, team_name,team_color)
+        new_team_key=create_team_players(user, player_names, team_name)
         message = mail.EmailMessage(sender="marco.flowers12@gmail.com",subject="Welcome to Baylolesports")
         message.to = user.email()
         message.body = """
@@ -129,6 +128,37 @@ class check_team_name_handler(BaseHandler):
     def get(self, name):
         logging.info(check_name_team(name))
         self.response.out.write(json.dumps({"name":check_name_team(name)}));
+
+class add_member(BaseHandler):
+    def post(self, id):
+        self.login()
+        logging.info(id)
+        teamo = team.get_by_id(int(id))
+        if not self.user:
+            self.redirect(get_login_url("/team/admin/"+id))
+        if self.user==teamo.admin:
+            player_name=self.request.get("form")
+            player_name=player_name[8:]
+            logging.info(player_name)
+            teamo.members.append(create_player(player_name))
+            teamo.put()
+        self.response.out.write(json.dumps("1"))
+
+class delete_member(BaseHandler):
+    def post(self, id):
+        self.login()
+        logging.info(id)
+        teamo = team.get_by_id(int(id))
+        if not self.user:
+            self.redirect(get_login_url("/team/admin/"+id))
+        if self.user==teamo.admin:
+            player_id=self.request.get("member_id")
+            logging.info(player.get_by_id(int(player_id)))
+            teamo.members.remove(player.get_by_id(int(player_id)).key)
+            teamo.put()
+        self.response.out.write(json.dumps("1"))
+
+
 class get_more_teams(BaseHandler):
     def post(self):
         output={"teams":[]}

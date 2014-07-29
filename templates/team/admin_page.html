@@ -9,19 +9,19 @@
 			<div class="list-group">
 			{% for player_key in team.members %}
 				{% if loop.index0 ==0 %}
-				<a  href="#" class="list-group-item">{{key_object(player_key).name}}</a>
+				<a  href="#" id="{{to_id(key_object(player_key))}}" class="list-group-item">{{key_object(player_key).name}}{% if team.members|count >5 %}<button type="button" class="close" id="delete_member" ><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>{% endif %}</a>
 				{% else %}
-				<a  href="#" class="list-group-item">{{key_object(player_key).name}}</a>
+				<a  href="#" id="{{to_id(key_object(player_key))}}" class="list-group-item">{{key_object(player_key).name}}{% if team.members|count >5 %}<button type="button" class="close" id="delete_member" ><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>{% endif %}</a>
 				{% endif %}
 				
 			{% endfor %}
 			{% if team.members|count <7 %}
-			<form>
+			<form name="new_member" id="new_member">
 				<div class="form-group" id="1">
 				    <label for="player1" class="control-label">New Player</label>
 				    <input type="text"  class="form-control player" name="player1" id="player1" placeholder="Enter Summoner Name">
 				  </div>
-				<button id="new_memeber" type="button" class="btn btn-default">Add Team Memeber</button>
+				<button id="new_member" type="submit" class="btn btn-default" data-loading-text="Disabled">Add Team Memeber</button>
 			</form>
 			{% endif %}
 			</div>
@@ -33,63 +33,102 @@
 $( document ).ready(function() {
 var timer_handler=null;
 var interval=5000;
-$("form").on("focusout", "input.player",function(){
-		if(timer_handler){
-    		clearTimeout(timer_handler);
-    		timer_handler = null;
-		}
-		doneTyping($(this))
-		checker()
-	});
-$("button#new_memeber").button("loading")
+$("body").on("input", "input.player",function(){
+	$("button#new_member").button("loading")
+	$(this).parent().removeClass("has-error")
+	$(this).parent().removeClass("has-success")
+	$(this).parent().children("label").children("small").remove()
+	if(timer_handler){
+		clearTimeout(timer_handler);
+		timer_handler = null;
+	}
+	if ($(this).val) {
+	var input=$(this)
+    timer_handler = setTimeout(doneTyping, 500, input)
+    
+    
+}
 });
+$("button#new_member").button("loading")
+});
+$("form#new_member").submit(function(e){
+	console.log("yes");
+	e.preventDefault();
+
+	$("button#new_member").button("loading")
+	$.ajax({
+	        url: '/team/add_member/{{to_id(team)}}', 
+	        type: "POST",
+			data: {"form":$("form#new_member").serialize()},
+	        dataType: 'json',
+	        success: function(data) {
+	        	console.log("done");
+	        	location.reload();
+	        }
+	});
+})
+$("button#delete_member").click(function(){
+	$.ajax({
+	        url: '/team/delete_member/{{to_id(team)}}', 
+	        type: "POST",
+			data: {"member_id":$(this).closest("a").attr("id")},
+	        dataType: 'json',
+	        success: function(data) {
+	        	console.log("done");
+	        	location.reload();
+	        }
+	});
+})
+
+
 function checker()
 {
 	if($("input#player1").parent("div").hasClass("has-success"))
 	{
-		$("button#new_memeber").button("reset")
+		$("button#new_member").button("reset")
 	}
 	else
 	{
-		$("button#new_memeber").button("loading")
+		$("button#new_member").button("loading")
 	}
 }
 function doneTyping(input)
-		{
-			var sum_name = input.val();
-			var position = input.parent().attr('id');
-			if(sum_name!="")
-			{
-				$.ajax({
-			        url: '/team/check_summoner_name/'+sum_name+"/"+position, 
-			        dataType: 'json',
-			        success: function(data) {
-			        	console.log("ajax")
-			        	input.parent().removeClass("has-error")
-						input.parent().removeClass("has-success")
-						input.parent().children("label").children("small").remove()
-			       		if(data.id ==false)
-			            {
-			            	input.parent().addClass("has-error")
-			            	input.parent().children("label").append("<small id='sum_name_error'>-Not a Valid Summoner Name</small>")
-			            }
-			            else
-			            {
-			            	
-			            	
-			            	input.parent().addClass("has-success")
-			
-			            }
-			        }
-			    });
-			}
-			else
-			{
+{
+	var sum_name = input.val();
+	var position = input.parent().attr('id');
+	if(sum_name!="")
+	{
+		$.ajax({
+	        url: '/team/check_summoner_name/'+sum_name+"/"+position, 
+	        dataType: 'json',
+	        success: function(data) {
+	        	input.parent().removeClass("has-error")
+				input.parent().removeClass("has-success")
+				input.parent().children("label").children("small").remove()
+	        	console.log("ajax")
+	       		if(data.id ==false)
+	            {
+	            	input.parent().addClass("has-error")
+	            	input.parent().children("label").append("<small id='sum_name_error'>-Not a Valid Summoner Name</small>")
+	            }
+	            else
+	            {
+	            	
+	            	
+	            	input.parent().addClass("has-success")
+	            	checker()
+	
+	            }
+	        }
+	    });
+	}
+	else
+	{
 				input.parent().removeClass("has-error")
-						input.parent().removeClass("has-success")
-						input.parent().children("label").children("small").remove()
-			}
-			
-		}
+				input.parent().removeClass("has-success")
+				input.parent().children("label").children("small").remove()
+	}
+	
+}
 </script>
 {% endblock %}

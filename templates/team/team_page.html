@@ -1,20 +1,22 @@
 {% extends "/templates/base.html" %}
 {% block head %}
+<link rel="stylesheet" type="text/css" href="/static/panel.css" />
+<style>
+</style>
+{% endblock %}
 
-<!--<style>
-body{
-	background-color:{{team.color}};
-}
-</style>-->
+{% block jumbo %}
+<div class="row bigblue" style="margin-bottom:30px;" >
+	<h1 class="text-center">{{team.name}}</h1>
+</div>
 {% endblock %}
 {% block content %}
-
-	<div class="col-md-12">
-		<h1 class="text-center">{{team.name}}</h1>
+	<div class="col-md-12 found_panel">
+		
 		<div class="col-md-3 text-center">
 			<h1></h1>
 			<h3>Team Members</h3>
-			<div class="list-group">
+			<div class="list-group ">
 			{% for player_key in team.members %}
 				{% if loop.index0 ==0 %}
 				<a  href="#" class="list-group-item active">{{key_object(player_key).name}}</a>
@@ -31,10 +33,12 @@ body{
 		{% endif %}
 		</div>
 		
-		<div class="col-md-9" id="player_results">
-			<div class="panel panel-primary text-center">
+		<div class="col-md-9" id="player_results" style="color:black;">
+			<div class=" text-center">
   				<div class="panel-body">
+  					<img  width="50px;" src="http://avatar.leagueoflegends.com/NA1/{{key_object(team.members[0]).name}}.png"></img>
 					<h2>{{key_object(team.members[0]).name}}</h2>
+				
 					{% if team.members[0].division != "empty" %}
 					<h4>{{key_object(team.members[0]).division}}</h4>
 					<img style="padding-left:auto;" src="{{rank_to_url(key_object(team.members[0]).division)}}"></img>
@@ -57,9 +61,11 @@ $( document ).ready(function() {
 		members={{keys_objects(team.members)}}
 		div_urls={{div_urls}}
 		memeber=members[id]
+		panel.append("<img width='50px;' src='http://avatar.leagueoflegends.com/NA1/"+memeber.name+".png'></img>")
 		panel.append("<h2>"+memeber.name+"</h2>")
 		if(memeber.division!="empty")
 		{
+			
 			panel.append("<h4>"+memeber.division+"</h4>")
 			panel.append("<img style='padding-left:auto;' src="+div_urls[id]+"></img>")
 		}

@@ -1,7 +1,7 @@
 {% extends "/templates/base.html" %}
 
 {% block jumbo %}
-<div class="row bigblue">
+<div class="row bigblue" style="margin:0">
 
 <div class="col-md-6 col-md-offset-3 text-center">
 		<h2>Search for a Team</h2>
@@ -21,24 +21,26 @@
 {% endblock %}
 {% block content %}
 <div class="col-md-6 col-md-offset-3 text-center">
->>>>>>> team
-	<div class="row">
-		<div class="team_results text-center">
-			<h3>Teams</h3>
-			<div class="list-group">
+	<h3>Teams</h3>
+</div>
+<div class="col-md-12">
+<div class="team_results text-center">
+	
 
-				{% for team in teams %}
-  				<a id="{{team.key.id()}}" href="/team/{{team.key.id()}}" class="list-group-item"><h3>{{team.name}}</h3><div class="table-responsive"><table class='table text-center'><tbody>
-  				{% for member in team.members %}
-  					<td>{{key_object(member).name}}</td>
-  				{% endfor %}
-  				</tbody></table></div>
-  				</a>
-  				<br>
-  				{% endfor %}
-  			</div>
-		</div>
-    </div>
+		{% for team in teams %}
+			<div class="col-md-6">
+			<a id="{{team.key.id()}}" href="/team/{{team.key.id()}}" class="list-group-item"><h3>{{team.name}}</h3><div class="table-responsive"><table class='table text-center'><tbody>
+			{% for member in team.members %}
+				<td>{{key_object(member).name}}</td>
+			{% endfor %}
+			</tbody></table></div>
+			</a>
+			<br>
+			</div>
+			{% endfor %}
+
+</div>
+</div>
 </div>
 <script>
 $( document ).ready(function() {
@@ -74,7 +76,7 @@ function add_team(id, name, players)
 	{
 		output=output+"<td>"+players[x]+"</td>"
 	}
-	$(".team_results .list-group").append("<a id='"+id+"' href='/team/"+id+"' class='list-group-item'><h3>"+name+"</h3><div class='table-responsive'><table class='table text-center'><tbody>"+output+"</tbody></table></div></a><br>")
+	$(".team_results").append("<div class='col-md-6'><a id='"+id+"' href='/team/"+id+"' class='list-group-item'><h3>"+name+"</h3><div class='table-responsive'><table class='table text-center'><tbody>"+output+"</tbody></table></div></a><br></div>")
 }
 function scroll_reload(){
 	if ($(window).scrollTop() + $(window).height() > 
@@ -87,6 +89,7 @@ function scroll_reload(){
 function search_function(input)
 {
 	stop_loading=true
+	console.log("go");
 	var type = $("#drop_search_but").text();
 	var input_val = input.val()
 	if(input_val=="")
@@ -94,15 +97,15 @@ function search_function(input)
 		input_val="dfskldfkdssdfklsdfkl"
 		stop_loading=false
 	}
-	$.ajax({
+		$.ajax({
 		url: "/team/get_team/"+type+"/"+input_val,
 		dataType: 'json',
 		success: function(data) {
-		  	$(".team_results .list-group").empty()
+		  	$(".team_results").empty()
 		  	teams= data.teams
 		  	if(teams.length==0)
 		  	{
-		  		$(".team_results .list-group").append("No teams match your search")
+		  		$(".team_results").append("No teams match your search")
 		  	}
 		  	for(var i =0;i<teams.length;i=i+1)
 		  	{
@@ -112,12 +115,14 @@ function search_function(input)
 		}
 		  
 	});
+	
+	
 }
 
 function load_new_items()
 {
 	current_teams=[]
-	$(".list-group a").each(function(){
+	$(".team_results a").each(function(){
 		current_teams.push($(this).attr("id"))
 	})
 	$.ajax({

@@ -117,21 +117,11 @@ body
 	<div class="col-md-6 col-md-offset-3"  style="color:white;">
 		<div class="wrapper">
 		<h2 class="text-center">Create a Team</h2>
-		<p class="text-center">Create a name for your team and enter in the Summoner Names of your teamates.</p>
+		<p class="text-center">Create a name for your team and enter in the Summoner Names of your teamates.(At least 5)</p>
 		<form role="form" id="new_team" method="post">
 		  <div class="form-group team_name">
 		    <label for="team_name" class="control-label">Team Name</label>
 		    <input type="text" class="form-control" name="team_name" id="team_name" placeholder="Enter Team Name">
-		  </div>
-		  <div class="form-group team_color">
-		    <label for="team_name" class="control-label">Team Color</label>
-		    <select type="text" class="form-control" name="team_color" id="team_color" placeholder="Enter Team Color">
-		    	<option value="">Pick a Color</option>
-		    	<option value="red">Red</option>
-		    	<option value="red">Green</option>
-		    	<option value="red">Blue</option>
-		    	<option value="red">Purple</option>
-		    </select>
 		  </div>
 		  <div class="form-group">
 		  	<label for="admin" class="control-label">Admin</label>
@@ -162,7 +152,6 @@ function checkstatus()
 {
 	var loop = 0
 	var check=0
-	var colorcheck=0
 	var inputs=[], flag=false;
 	$('input.player').each(function(){
 		if($(this).val()!="")
@@ -177,9 +166,6 @@ function checkstatus()
 	if ($(this).hasClass("team_name") && $(this).hasClass("has-success")) {
 		check=check+1
 	}
-	else if ($(this).hasClass("team_color") && $(this).children("select").val()!="") {
-		colorcheck=colorcheck+1
-	}
   	else if($(this).hasClass("has-error"))
   	{
   		loop=-50
@@ -189,12 +175,8 @@ function checkstatus()
   		loop=loop+1
   	}
 	});
-	console.log(flag)
-	console.log(loop)
-	console.log(check)
-	if(loop>=5 && check>=1 && flag==false && colorcheck>=1)
+	if(loop>=5 && check>=1 && flag==false)
 	{
-		console.log("ye")
 		$("button").button('reset')
 		return true
 	}
@@ -205,57 +187,54 @@ function checkstatus()
 	}
 }
 function doneTyping(input)
-		{
-			var sum_name = input.val();
-			var position = input.parent().attr('id');
-			if(sum_name!="")
-			{
-				$.ajax({
-			        url: '/team/check_summoner_name/'+sum_name+"/"+position, 
-			        dataType: 'json',
-			        success: function(data) {
-			        	console.log("ajax")
-			        	input.parent().removeClass("has-error")
-						input.parent().removeClass("has-success")
-						input.parent().children("label").children("small").remove()
-			       		if(data.id ==false)
-			            {
-			            	input.parent().addClass("has-error")
-			            	input.parent().children("label").append("<small id='sum_name_error'>-Not a Valid Summoner Name</small>")
-			            }
-			            else
-			            {
-			            	
-			            	
-			            	input.parent().addClass("has-success")
-			            	if(input_place<=7)
-			            	{
-			            		if(input.parent().attr("id")>=(input_place-2))
-				            	{
-				            		new_input(input_place)
-				            		input_place=input_place+1
-				            	}
-			            	}
-			            }
-			            
-			        }
-			    });
-			}
-			else
-			{
-				input.parent().removeClass("has-error")
+{
+	console.log("doneTyping")
+	var sum_name = input.val();
+	var position = input.parent().attr('id');
+	if(sum_name!="")
+	{
+		$.ajax({
+	        url: '/team/check_summoner_name/'+sum_name+"/"+position, 
+	        dataType: 'json',
+	        success: function(data) {
+	        	input.parent().removeClass("has-error")
 				input.parent().removeClass("has-success")
 				input.parent().children("label").children("small").remove()
-			}
-			checkstatus()
-			
-		}
+	       		if(data.id ==false)
+	            {
+	            	input.parent().addClass("has-error")
+	            	input.parent().children("label").append("<small id='sum_name_error'>-Not a Valid Summoner Name</small>")
+	            }
+	            else
+	            {
+	            	
+	            	
+	            	input.parent().addClass("has-success")
+	            	if(input_place<=7)
+	            	{
+	            		if(input.parent().attr("id")>=(input_place-2))
+		            	{
+		            		new_input(input_place)
+		            		input_place=input_place+1
+		            	}
+	            	}
+	            }
+	            checkstatus()
+	            
+	        }
+	    });
+	}
+	else
+	{
+		input.parent().removeClass("has-error")
+		input.parent().removeClass("has-success")
+		input.parent().children("label").children("small").remove()
+	}
+	
+}
 
 
 $( document ).ready(function() {
-	$("form").change(function(){
-		checkstatus()
-	});
 	$("form").submit(function(){
 		$(".row").empty()
 		$(".row").append("<h1>Creating your team</h1><div id='loader'><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div></div>")
@@ -264,8 +243,12 @@ $( document ).ready(function() {
 	$("button").button('loading')
 	var timer_handler=null;
 	var interval=5000;
-	$("body").on("keydown", "input.player",function(){
+	$("body").on("input", "input.player",function(){
+		$("button").button('loading')
 		console.log("input")
+		$(this).parent().removeClass("has-error")
+		$(this).parent().removeClass("has-success")
+		$(this).parent().children("label").children("small").remove()
 		if(timer_handler){
     		clearTimeout(timer_handler);
     		timer_handler = null;
@@ -273,17 +256,7 @@ $( document ).ready(function() {
 		if ($(this).val) {
 		var input=$(this)
         timer_handler = setTimeout(doneTyping, 500, input)
-        
-        
     }
-	});
-	$("form").on("focusout", "input.player",function(){
-		if(timer_handler){
-    		clearTimeout(timer_handler);
-    		timer_handler = null;
-		}
-		doneTyping($(this))
-		checkstatus()
 	});
 	$("input").focusout(function(){
 		if($(this).attr("id")=="team_name")
@@ -298,8 +271,7 @@ $( document ).ready(function() {
 		        dataType: 'json',
 		        success: function(data) {
 		        	var input = $("#team_name")
-		        	console.log(data)
-		            if(data.name ==false ||name=="")
+		            if((data.name ==false ||name=="")&&name!="none")
 		            {
 		            	input.parent().addClass("has-error")
 		            	input.parent().children("label").append("<small id='sum_name_error'>-Not a Valid Team Name</small>")
