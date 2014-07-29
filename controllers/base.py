@@ -46,6 +46,7 @@ class BaseHandler(webapp2.RequestHandler):
                     'get_ukey':get_ukey,
                     'key_object':key_object,
                     'to_ukey':to_ukey,
+		    'to_id':to_id,
 		}
 		if user:
                     self.template_values["user"]=user

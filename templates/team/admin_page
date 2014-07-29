@@ -1,14 +1,6 @@
 {% extends "/templates/base.html" %}
-{% block head %}
-
-<!--<style>
-body{
-	background-color:{{team.color}};
-}
-</style>-->
-{% endblock %}
 {% block content %}
-
+<div class="row" >
 	<div class="col-md-12">
 		<h1 class="text-center">{{team.name}}</h1>
 		<div class="col-md-3 text-center">
@@ -24,11 +16,6 @@ body{
 				
 			{% endfor %}
 			</div>
-			{% if admin == 1 %}
-			<a href="/team/admin/{{to_id(team)}}" type="button" class="btn btn-default">
-				Admin Page
-			</a>
-		{% endif %}
 		</div>
 		
 		<div class="col-md-9" id="player_results">

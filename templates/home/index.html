@@ -1,6 +1,7 @@
 {% extends "/templates/base.html" %}
-{% block content %}
-<div class="row">
+{% block jumbo %}
+<div class="row bigblue">
+	<div class="container">
 	<div class="col-md-12">
 		<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 		  <!-- Indicators -->
@@ -43,6 +44,9 @@
 		</div>
 	</div>
 </div>
+</div>
+{% endblock %}
+{% block content %}
 <div class="row text-center">
 	<div class="col-md-4">
 		<h2>Create a New Team</h2>
