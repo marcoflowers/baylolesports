@@ -2,10 +2,10 @@
 
 
 {% block head %}
-
-<link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" type="text/css" media="screen"
-    href="/static/css/datetimepicker.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+     
+    <link href="/static/css/jquery-ui-timepicker-addon.css" rel="stylesheet">
+  
 {% endblock %}
 
 
@@ -111,15 +111,8 @@
                     <div class="tab-pane" id="{{ to_ukey(game) }}">
                         <div class="col-md-3">
                             Set Date and Time:<br>
-                            <div class="input-append date datepicker no-padding" data-date-format="dd-mm-yyyy">
-                                <input class="input-medium" size="16" type="text"><span class="add-on"><i class="icon-th"></i></span>
-                            </div>
-                            <div id="datetimepicker" class="input-append date {{loop.index}}">
-                                <input type="text"></input>
-                                <span class="add-on">
-                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-                                </span>
-                            </div>
+                            <input type="text" class="datepicker">
+                            
                             <input class="{{to_ukey(game)}}" type="checkbox" name="notifications">Send Email Notifications<br>
                             <button class="{{to_ukey(game)}}">Schedule Game</button>
                         </div>
@@ -162,19 +155,29 @@
     </div>
 
 </div>
-<script src="/static/js/drag_drop.js"></script>
-<script src="/static/js/bootstrap-datepicker.js"></script>
 
 
-<script type="text/javascript">
-    $(function() {
-        console.log($('#schedule').find('datepicker'));
-        $('#schedule').find('datepicker').each(function(index, object) {
-            console.log(index);
-        });
-    });
-</script>
+
+
 
 
 
 {% endblock %}
+{% block footer%}
+<script src="/static/js/drag_drop.js"></script>
+  <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+  <script src="/static/js/jquery-ui-timepicker-addon.min.js"></script>
+  
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".datepicker").each(function(index){
+            $(this).datetimepicker({
+                minDate:-20
+            });
+        })
+    })
+
+
+      
+    </script>
+{% endblock%}
