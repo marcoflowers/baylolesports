@@ -62,20 +62,14 @@ class new_team(BaseHandler):
         user = users.get_current_user()
         if user:
             template_values={}
-            self.render_template('/templates/team/new_team.html', template_values)
+            self.render_template('/templates/team/new_team2.html', template_values)
         else:
             self.redirect(get_login_url("/team/new_team"))
         
     def post(self):
         user = users.get_current_user()
-        team_name=cgi.escape(self.request.get("team_name"))
-        player_names=[]
-        #get player names
-        for x in range(1,8):
-            name=cgi.escape(self.request.get("player"+str(x)))
-            if name !="":
-                player_names.append(name)
-        new_team_key=create_team_players(user, player_names, team_name)
+        team_id=cgi.escape(self.request.get("optionsRadios"))
+        new_team_key=create_team_players(user, team_id)
         message = mail.EmailMessage(sender="marco.flowers12@gmail.com",subject="Welcome to Baylolesports")
         message.to = user.email()
         message.body = """
@@ -185,3 +179,14 @@ class get_more_teams(BaseHandler):
                 count=count+1
         logging.info(output)
         self.response.out.write(json.dumps(output))
+class return_list_of_teams(BaseHandler):
+    def post(self):
+        self.login()
+        name=json.loads(self.request.get("name"))
+        if not self.user:
+            self.redirect(get_login_url("/team/admin/"+id))
+        summoner_id=get_sum_id(name)
+        logging.info(summoner_id);
+        teams = get_list_of_teams(summoner_id)
+        logging.info(teams);
+        self.response.out.write(json.dumps(teams))

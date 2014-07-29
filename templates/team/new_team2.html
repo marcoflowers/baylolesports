@@ -1,0 +1,269 @@
+{% extends "/templates/base.html" %}
+{% block head %}
+<style>
+.wrapper{
+	background-color: rgba(10, 10, 10, 0.8);
+	padding:10px 10px 10px 10px;
+	margin-bottom: 20px;
+}
+body
+{
+	background: url('http://gglol.com.au/uploads/2aa1c3aa40984914e1abf9b2a2a78f79.jpg') no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+#loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 175px;
+  height: 175px;
+  margin: auto;
+}
+#loader .dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 87.5px;
+  height: 100%;
+  margin: auto;
+}
+#loader .dot:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 87.5px;
+  height: 87.5px;
+  border-radius: 100%;
+  transform: scale(0);
+}
+#loader .dot:nth-child(7n+1) {
+  transform: rotate(45deg);
+}
+#loader .dot:nth-child(7n+1):before {
+  background: #00ff80;
+  -webkit-animation: load 0.8s linear 0.1s infinite;
+}
+#loader .dot:nth-child(7n+2) {
+  transform: rotate(90deg);
+}
+#loader .dot:nth-child(7n+2):before {
+  background: #00ffea;
+  -webkit-animation: load 0.8s linear 0.2s infinite;
+}
+#loader .dot:nth-child(7n+3) {
+  transform: rotate(135deg);
+}
+#loader .dot:nth-child(7n+3):before {
+  background: #00aaff;
+  -webkit-animation: load 0.8s linear 0.3s infinite;
+}
+#loader .dot:nth-child(7n+4) {
+  transform: rotate(180deg);
+}
+#loader .dot:nth-child(7n+4):before {
+  background: #0040ff;
+  -webkit-animation: load 0.8s linear 0.4s infinite;
+}
+#loader .dot:nth-child(7n+5) {
+  transform: rotate(225deg);
+}
+#loader .dot:nth-child(7n+5):before {
+  background: #2a00ff;
+  -webkit-animation: load 0.8s linear 0.5s infinite;
+}
+#loader .dot:nth-child(7n+6) {
+  transform: rotate(270deg);
+}
+#loader .dot:nth-child(7n+6):before {
+  background: #9500ff;
+  -webkit-animation: load 0.8s linear 0.6s infinite;
+}
+#loader .dot:nth-child(7n+7) {
+  transform: rotate(315deg);
+}
+#loader .dot:nth-child(7n+7):before {
+  background: magenta;
+  -webkit-animation: load 0.8s linear 0.7s infinite;
+}
+#loader .dot:nth-child(7n+8) {
+  transform: rotate(360deg);
+}
+#loader .dot:nth-child(7n+8):before {
+  background: #ff0095;
+  -webkit-animation: load 0.8s linear 0.8s infinite;
+}
+
+@-webkit-keyframes load {
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="row" style="margin-top:50px">
+	
+	<div class="col-md-6 col-md-offset-3"  style="color:white;">
+		<div class="wrapper">
+		<h2 class="text-center">Create a Team</h2>
+		<p class="text-center">Add your riot team</p>
+		<form role="form" id="new_team" method="post">
+		  <div class="form-group">
+		  	<label for="admin" class="control-label">Admin</label>
+		  	<input name="admin" class="form-control" type="text" placeholder="{{user.email()}}" readonly>
+		  </div>
+		  <div class="form-group" id="1">
+		    <label for="player1" class="control-label">Summoner Name</label>
+		    <input type="text"  class="form-control player" name="player1" id="player1" placeholder="Enter Summoner Name">
+		  </div>
+		  <div class="radio_wrapper">
+		  </div>
+		  <div id="submit_center" class="text-center">
+		  <button  type="submit" id="team_submit" class="btn btn-default btn-lg" data-loading-text="Disabled">Submit</button>
+		</div>
+		</form>
+	</div>
+</div>
+</div>
+<script>
+function new_input(num)
+{
+	$("div#submit_center").before("<div class='form-group' id='"+num+"'><label for='player"+num+"' class='control-label'>Player "+num+"</label><input type='text'  class='form-control player' name='player"+num+"' id='player"+num+"' placeholder='Enter Summoner Name'></div>")
+}
+function addteams(name)
+{
+	console.log("ajax")
+	$.ajax({
+			type: 'POST',
+        	data: {"name":JSON.stringify(name)},
+	        url: '/team/return_list_of_teams', 
+	        dataType: 'json',
+	        success: function(data) {
+	        	console.log(data);
+	        	$(".radio_wrapper").append("Pick your team")
+	        	for(var i=0;i<data.length;i=i+1)
+	        	{
+	        		$(".radio_wrapper").append("<div class='radio'><label><input type='radio' name='optionsRadios' value='"+data[i]["id"]+"'>"+data[i]["name"]+"</label></div>")
+	        	}
+	        }
+	    });
+}
+var input_place=3
+function checkstatus()
+{
+	var loop = 0
+	var inputs=[], flag=false;
+	$('input.player').each(function(){
+		if($(this).val()!="")
+		{
+			if ($.inArray(this.value, inputs) != -1) flag=true ;
+	    	inputs.push(this.value);
+		}
+	    
+	});
+	
+	$( ".form-group" ).each(function( index ) {
+  	if($(this).hasClass("has-error"))
+  	{
+  		loop=-50
+  	}
+  	else if ($(this).hasClass("has-success"))
+  	{
+  		loop=loop+1
+  	}
+	});
+	if(loop>=1 && flag==false && ($('input[type=radio]:checked').size() > 0))
+	{
+		$("button").button('reset')
+		return true
+	}
+	else
+	{
+		$("button").button('loading')
+		return false
+	}
+}
+function doneTyping(input)
+{
+	console.log("doneTyping")
+	var sum_name = input.val();
+	var position = input.parent().attr('id');
+	if(sum_name!="")
+	{
+		$.ajax({
+	        url: '/team/check_summoner_name/'+sum_name+"/"+position, 
+	        dataType: 'json',
+	        success: function(data) {
+	        	input.parent().removeClass("has-error")
+				input.parent().removeClass("has-success")
+				input.parent().children("label").children("small").remove()
+	       		if(data.id ==false)
+	            {
+	            	input.parent().addClass("has-error")
+	            	input.parent().children("label").append("<small id='sum_name_error'>-Not a Valid Summoner Name</small>")
+	            }
+	            else
+	            {
+	            	
+	            	
+	            	input.parent().addClass("has-success")
+	            	addteams(sum_name)
+	            }
+	            checkstatus()
+	            
+	        }
+	    });
+	}
+	else
+	{
+		input.parent().removeClass("has-error")
+		input.parent().removeClass("has-success")
+		input.parent().children("label").children("small").remove()
+	}
+	
+}
+
+
+$( document ).ready(function() {
+	$("form").submit(function(){
+		$(".row").empty()
+		$(".row").append("<h1>Creating your team</h1><div id='loader'><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div></div>")
+		$("button").button('loading')
+	});
+	$("button").button('loading')
+	var timer_handler=null;
+	var interval=5000;
+	$("body").on("input", "input.player",function(){
+		$("button").button('loading')
+		console.log("input")
+		$(this).parent().removeClass("has-error")
+		$(this).parent().removeClass("has-success")
+		$(this).parent().children("label").children("small").remove()
+		$(".radio_wrapper").empty();
+		if(timer_handler){
+    		clearTimeout(timer_handler);
+    		timer_handler = null;
+		}
+		if ($(this).val) {
+		var input=$(this)
+        timer_handler = setTimeout(doneTyping, 500, input)
+    }
+	});
+	$( "#new_team" ).change(function() {
+		checkstatus()
+	});
+});
+	
+</script>
+{% endblock %}
