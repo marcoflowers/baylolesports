@@ -65,6 +65,7 @@ class game(ndb.Model):
     happened = ndb.BooleanProperty()
     event_id = ndb.StringProperty()
     winner = ndb.KeyProperty()
+    stats = ndb.JsonProperty()
 
 class player_stats(ndb.Model):
     ranked_stats = ndb.JsonProperty()

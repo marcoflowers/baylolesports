@@ -224,3 +224,86 @@ class check_name(BaseHandler):
             available = False
         self.response.out.write(json.dumps({"available":available}))
 
+
+
+
+def get_game(game): #game must be a key
+    api_key="655fefc4-c614-420f-895c-893e2c8b9aee"
+    summoners = []
+    game = key_object(game)
+    total_games = {}
+    game_list = []
+    games = {}
+    summoner_ids = []
+    for team in game.teams:
+        for member in team.members:
+            url = "https://na.api.pvp.net/api/lol/na/v1.3/game/by-summoner/%s/recent?api_key=%s" % [member.key().id(), api_key]
+            try:
+                response = json.load(urllib2.urlopen(url))
+                games_found = response['games']
+                summoner_id = response['summonerId']
+                total_games[member.key().id()] = games
+                for game_found in games_found:
+                    if(game_found['gameType'] != 'CUSTOM_GAME'):
+                        continue
+                    game_id = game_found['gameId']
+                    if(game_id in games.keys()):
+                        games[game_id][summoner_id] = game_found['stats']
+                    else:
+                        games[game_id] = {}
+
+
+
+            except Exception as e:
+                print e
+
+
+    target_game = ''
+    game_count = {}
+    for game_found in game_list:
+        if game_found[gameId] in game_list.keys():
+            game_count[gameId] += 1
+        else:
+            game_count[gameId] = 1
+    
+
+
+
+# games
+#     gameid
+#         game_info
+#         summoner
+#             stats
+#         summoner
+#             stats
+#         summoner
+#             stats
+#         summoner
+#             stats
+#         summoner
+#             stats
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -3,9 +3,9 @@
   <head>
     <!--link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen"-->
     <!--link href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen"-->
+    <script src="/static/js/jquery.min.js"></script>
     <link href="/static/css/style.css" rel="stylesheet">
     <link href="/static/magic-bootstrap (1).css" rel="stylesheet">
-    <script src="/static/js/jquery.min.js"></script>
     {% block head %}{% endblock %}
     <style>
       .bigblue
@@ -109,4 +109,5 @@
     })
   });
   </script>
+  {% block scripts %}{% endblock %}
 </html>
