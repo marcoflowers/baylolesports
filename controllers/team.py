@@ -43,6 +43,10 @@ class team_page(BaseHandler):
             div_urls.append(rank_to_url(key_object(member).division))
         logging.info(self.user)
         logging.info(teamo.admin)
+        team_stats = team_stat.query(team_stat.team==teamo.key).fetch()
+        if(len(team_stats)<=0):
+            team_stats=False
+        
         if self.user==teamo.admin:
             admin=1
         else:
@@ -52,6 +56,7 @@ class team_page(BaseHandler):
             "team":teamo,
             "div_urls":json.dumps(div_urls),
             "admin":admin,
+            "team_stats":team_stats
         }
 
         self.render_template('/templates/team/team_page.html', template_values)
@@ -182,11 +187,22 @@ class get_more_teams(BaseHandler):
 class return_list_of_teams(BaseHandler):
     def post(self):
         self.login()
+        #get summoner name
         name=json.loads(self.request.get("name"))
         if not self.user:
             self.redirect(get_login_url("/team/admin/"+id))
+        #get summoner id
         summoner_id=get_sum_id(name)
-        logging.info(summoner_id);
+        #get list of teams
         teams = get_list_of_teams(summoner_id)
-        logging.info(teams);
+        #remove any that are already teams
+        for teamo in teams:
+            if(team.query(team.name==teamo["name"]).get()):
+                teams.remove(teamo)
         self.response.out.write(json.dumps(teams))
+class check_rune(BaseHandler):
+    def post(self):
+        name=self.request.get("sum_name")
+        code=self.request.get("code")
+        summoner_id=get_sum_id(name)
+        self.response.out.write(json.dumps(check_rune_page(summoner_id, code)))

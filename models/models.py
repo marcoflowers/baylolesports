@@ -17,7 +17,12 @@ from google.appengine.api import memcache
 
 
 
-
+class team_stat(ndb.Model):
+    team=ndb.KeyProperty()
+    division=ndb.StringProperty()
+    league_points=ndb.IntegerProperty()
+    wins=ndb.IntegerProperty()
+    queue=ndb.StringProperty()
 class team(ndb.Model): #don't touch
     name = ndb.StringProperty()
     members = ndb.KeyProperty(repeated=True)
@@ -171,8 +176,10 @@ def create_team_players(user, team_id):
                 taskqueue.add(countdown=20,name="player"+str(player_key.id())+str(datetime.date.today()), queue_name="riot", url='/queue/player_stats', params={'id': player_key.id()})
             except TombstonedTaskError, e:
                 logging.info("error")
+        time.sleep(1)
     new_team = team(name=team_name,members=player_keys,admin=user,fullId=team_id,tag=team_tag)
     new_team_key = new_team.put()
+    get_team_stats(team_id,new_team_key)
     return new_team_key
 
 def check_name_team(team_name):
@@ -213,3 +220,30 @@ def get_player_by_id(player_id):
     url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/"+str(player_id)+"?api_key="+api_key
     result = json.loads(urllib2.urlopen(url).read())
     return result[str(player_id)]
+def get_team_stats(team_id, team_key):
+    api_key="655fefc4-c614-420f-895c-893e2c8b9aee"
+    url = "https://na.api.pvp.net/api/lol/na/v2.4/league/by-team/"+str(team_id)+"/entry?api_key="+api_key
+    result = json.loads(urllib2.urlopen(url).read())
+    results=result[team_id]
+    for array in results:
+        league_points=array["entries"][0]["leaguePoints"]
+        division=array["entries"][0]["division"]
+        wins=array["entries"][0]["wins"]
+        tier=array["tier"]
+        queue=array["queue"]
+        division=tier+" "+division
+        #stats = team_stat.query(team_stat.team==team_key).fetch()
+        #check for old stats
+        new_team_stats=team_stat(team=team_key,league_points=league_points,division=division,wins=wins,queue=queue)
+        new_team_stats.put()
+def check_rune_page(summoner_id, string_check):
+    api_key="655fefc4-c614-420f-895c-893e2c8b9aee"
+    url="https://na.api.pvp.net/api/lol/na/v1.4/summoner/"+str(summoner_id)+"/runes?api_key="+api_key
+    result = json.loads(urllib2.urlopen(url).read())
+    runes=result[str(summoner_id)]["pages"]
+    check=False
+    for rune_page in runes:
+        if(rune_page["name"]==string_check):
+            check=True
+    return check
+

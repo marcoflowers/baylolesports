@@ -127,10 +127,14 @@ body
 		    <label for="player1" class="control-label">Summoner Name</label>
 		    <input type="text"  class="form-control player" name="player1" id="player1" placeholder="Enter Summoner Name">
 		  </div>
+		  <div class="auth_check text-center" id="auth_check">
+		  </div>
 		  <div class="radio_wrapper">
 		  </div>
 		  <div id="submit_center" class="text-center">
-		  <button  type="submit" id="team_submit" class="btn btn-default btn-lg" data-loading-text="Disabled">Submit</button>
+		  	<br>
+		  	<br>
+		  
 		</div>
 		</form>
 	</div>
@@ -151,7 +155,7 @@ function addteams(name)
 	        dataType: 'json',
 	        success: function(data) {
 	        	console.log(data);
-	        	$(".radio_wrapper").append("Pick your team")
+	        	$(".radio_wrapper").append("Pick the team you want to register(If a team isn't here a teamate may have already registered it)")
 	        	for(var i=0;i<data.length;i=i+1)
 	        	{
 	        		$(".radio_wrapper").append("<div class='radio'><label><input type='radio' name='optionsRadios' value='"+data[i]["id"]+"'>"+data[i]["name"]+"</label></div>")
@@ -185,12 +189,12 @@ function checkstatus()
 	});
 	if(loop>=1 && flag==false && ($('input[type=radio]:checked').size() > 0))
 	{
-		$("button").button('reset')
+		$("#team_submit").button('reset')
 		return true
 	}
 	else
 	{
-		$("button").button('loading')
+		$("#team_submit").button('loading')
 		return false
 	}
 }
@@ -212,13 +216,15 @@ function doneTyping(input)
 	            {
 	            	input.parent().addClass("has-error")
 	            	input.parent().children("label").append("<small id='sum_name_error'>-Not a Valid Summoner Name</small>")
+	            	$("#auth_check").empty()
 	            }
 	            else
 	            {
 	            	
 	            	
 	            	input.parent().addClass("has-success")
-	            	addteams(sum_name)
+	            	$("#auth_check").append("Confirm you have access to this account<br><button id='sure' class='btn btn-default' type='button'>I'm "+sum_name+"</button>")
+	            	//addteams(sum_name)
 	            }
 	            checkstatus()
 	            
@@ -230,26 +236,81 @@ function doneTyping(input)
 		input.parent().removeClass("has-error")
 		input.parent().removeClass("has-success")
 		input.parent().children("label").children("small").remove()
+		$("#auth_check").empty()
 	}
 	
 }
 
+function makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+    for( var i=0; i < 5; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+var code=""
+var summoner_name=""
 $( document ).ready(function() {
+	$("body").on("click","#sure",function(){
+		summoner_name = $("#player1").val();
+		code=makeid()
+		$("#1 input").hide()
+		$("#1 label").hide()
+		$("#1").append("<h3>"+summoner_name+"</h3>")
+		$("#auth_check").empty()
+		$("#auth_check").append("To validate that you are the actual owner of this account you must change 1 of your rune pages to this string<br>")
+		$("#auth_check").append("<code>"+code+"</code>")
+		$("#auth_check").append("<br>Once you have done that click this button")
+		$("#auth_check").append("<br><button class='btn btn-default' type='button'id='auth_rune'>Done</button>")
+
+	})
+	$("body").on("click","#auth_rune",function(){
+		$("#auth_rune").button('loading')
+		$("#auth_check #rune_error").remove()
+		$.ajax({
+	        url: '/team/check_rune', 
+	        type:'post',
+	        data:{"sum_name":summoner_name,"code":code},
+	        dataType: 'json',
+	        success:function(data){
+	        	if(data==true)
+	        	{
+	        		addteams(summoner_name)
+	        		$("#auth_check").empty()
+	        		$("#1").prepend("Welcome, ")
+	            	$("form").append("<button  type='submit' id='team_submit' class='btn btn-default btn-lg' data-loading-text='Disabled'>Submit</button>")
+	            	$("#team_submit").button('loading')
+	        		
+	        	}
+	        	else
+	        	{
+	        		//do something
+	        		$("#auth_rune").button('reset')
+	        			$("#auth_check").append("<div id='rune_error' >A runepage was not changed<small>(hint make sure to save)</small> You may have to wait a few seconds</div>")
+	        		
+	        	}
+
+	        }
+	    })
+	})
 	$("form").submit(function(){
 		$(".row").empty()
 		$(".row").append("<h1>Creating your team</h1><div id='loader'><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div><div class='dot'></div></div>")
 		$("button").button('loading')
 	});
-	$("button").button('loading')
+	$("#team_submit").button('loading')
 	var timer_handler=null;
 	var interval=5000;
 	$("body").on("input", "input.player",function(){
-		$("button").button('loading')
+		$("#team_submit").button('loading')
 		console.log("input")
 		$(this).parent().removeClass("has-error")
 		$(this).parent().removeClass("has-success")
 		$(this).parent().children("label").children("small").remove()
+		$("#auth_check").empty()
 		$(".radio_wrapper").empty();
 		if(timer_handler){
     		clearTimeout(timer_handler);
@@ -262,6 +323,10 @@ $( document ).ready(function() {
 	});
 	$( "#new_team" ).change(function() {
 		checkstatus()
+		if(loop>=1 && flag==false && ($('input[type=radio]:checked').size() > 0))
+		{
+			$("#team_submit").button('reset')
+		}
 	});
 });
 	

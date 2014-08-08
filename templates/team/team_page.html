@@ -11,25 +11,44 @@
 </div>
 {% endblock %}
 {% block content %}
-	<div class="col-md-12 found_panel">
-		
+{% if team_stats!=false %}
+<div class="col-md-12 found_panel text-center">
+	<h3>Ranked Queues</h3>
+	{% for stats in team_stats %}
+	<div class="col-md-6 text-center">
+		<h3>{{stats.queue}}</h3>
+		{% if team.members[0].division != "empty" %}
+		<h4>{{stats.division}}</h4>
+		<img style="padding-left:auto;" src="{{rank_to_url(stats.division)}}"></img>
+		{% else %}
+		<h4>Fetching Division</h4>
+		{% endif %}
+		<h4>{{stats.league_points}} lp</h4>
+		<h4>Wins: {{stats.wins}}</h4>
+	</div>
+	{% endfor %}
+	
+</div>
+{% endif %}
+	<div class="col-md-12 found_panel text-center">
+		<h3>Team Members</h3>
 		<div class="col-md-3 text-center">
 			<h1></h1>
-			<h3>Team Members</h3>
+			
 			<div class="list-group ">
 			{% for player_key in team.members %}
 				{% if loop.index0 ==0 %}
-				<a  href="#" class="list-group-item active">{{key_object(player_key).name}}</a>
+				<a  href="javascript:void(0)" class="list-group-item active">{{key_object(player_key).name}}</a>
 				{% else %}
-				<a  href="#" class="list-group-item">{{key_object(player_key).name}}</a>
+				<a  href="javascript:void(0)" class="list-group-item">{{key_object(player_key).name}}</a>
 				{% endif %}
 				
 			{% endfor %}
 			</div>
 			{% if admin == 1 %}
-			<a href="/team/admin/{{to_id(team)}}" type="button" class="btn btn-default">
+			<!--a href="/team/admin/{{to_id(team)}}" type="button" class="btn btn-default">
 				Admin Page
-			</a>
+			</a-->
 		{% endif %}
 		</div>
 		
@@ -49,7 +68,11 @@
 			</div>
 		</div>
 	</div>
+	<div class="col-md-12 found_panel text-center">
+		<h3>Tournaments</h3>
 </div>
+</div>
+
 <script>
 $( document ).ready(function() {
 	$("a.list-group-item").click(function(){

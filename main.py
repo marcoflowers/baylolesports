@@ -32,6 +32,7 @@ import os
 app = webapp2.WSGIApplication([
     ('/', home.index),
     ('/team/get_more_teams', team.get_more_teams),
+    ('/team/check_rune', team.check_rune),
     ('/team/admin/(.*)', team.admin),
     ('/team/check_team_name/(.*)', team.check_team_name_handler),
     ('/team/return_list_of_teams', team.return_list_of_teams),
