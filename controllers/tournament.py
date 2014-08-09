@@ -285,7 +285,9 @@ def get_game(game): #game must be a key
 
 
 
-
+class new(BaseHandler):
+    def get(self):
+        pass
 
 
 

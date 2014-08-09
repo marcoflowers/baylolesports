@@ -8,65 +8,87 @@
 
 {% block content %}
 
-    <div class="header">
-        <h3>Tournaments</h3>
+<div class="text-center">
+    <h3>Tournaments</h3>
+    <div style="overflow:hidden;" class="row filter">
+        <div class="col-md-12 search">
+            <input type="search" placeholder="Search"></input>
+        </div>
+        <div class="form-group col-md-2 col-md-offset-5 filters">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="" id="active" />
+                        Active
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="" id="size" />
+                        Open Slots
+                    </label>
+                </div>
+                <div class="select">
+                    <select class="form-control">
+                        <option selected>Size</option>
+                        <option value="4">4</option>
+                        <option value="8">8</option>
+                        <option value="16">16</option>
+                        <option value="32">32</option>
+                    </select>
+                </div>
+        </div>
     </div>
-    <div class="wrap">
-        <div class="boxes">
-            <div class="box">
-                <div class="boxInner">
-                    <div class="titleBox">Title</div>
-                </div>
+</div>
+<div class="wrap">
+    <div class="boxes">
+        {% for tournament in tournaments %}
+        <a href="/tournament/{{get_ukey(tournament)}}"><div class="box wrapper" id="{{ get_ukey(tournament) }}">
+            <div class="boxInner">
+                <div class="titleBox">{{ tournament.name }}</div>
             </div>
-            <div class="box">
-                <div class="boxInner">
-                    <div class="titleBox">Title</div>
-                </div>
+        </div></a>
+        {% endfor %}
+        <div class="box">
+            <div class="boxInner">
+                <div class="titleBox">Title</div>
             </div>
-            <div class="box">
-                <div class="boxInner">
-                    <div class="titleBox">Title</div>
-                </div>
+        </div>
+        <div class="box">
+            <div class="boxInner">
+                <div class="titleBox">Title</div>
             </div>
-            <div class="box">
-                <div class="boxInner">
-                    <div class="titleBox">Title</div>
-                </div>
+        </div>
+        <div class="box">
+            <div class="boxInner">
+                <div class="titleBox">Title</div>
             </div>
-            <div class="box">
-                <div class="boxInner">
-                    <div class="titleBox">Title</div>
-                </div>
+        </div>
+        <div class="box">
+            <div class="boxInner">
+                <div class="titleBox">Title</div>
             </div>
-            <div class="box">
-                <div class="boxInner">
-                    <div class="titleBox">Title</div>
-                </div>
+        </div>
+        <div class="box">
+            <div class="boxInner">
+                <div class="titleBox">Title</div>
             </div>
-            <div class="box">
-                <div class="boxInner">
-                    <div class="titleBox">Title</div>
-                </div>
+        </div>
+        <div class="box">
+            <div class="boxInner">
+                <div class="titleBox">Title</div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
 {% block scripts %}
 <script type="text/javascript">
-    $(function(){
-      // See if this is a touch device
-      if ('ontouchstart' in window)
-      {
-        console.log('touch device');
-        // Set the correct body class
-        $('body').removeClass('no-touch').addClass('touch');
-        
-        // Add the touch toggle to show text
-        $('div.boxInner img').click(function(){
-          $(this).closest('.boxInner').toggleClass('touchFocus');
-        });
-      }
-    });
-  </script>
-
+window.create_dates = {
+{% for tournament in tournaments %}
+"{{ get_ukey(tournament) }}":"{{ tournament.created }}",
+{% endfor %}
+}
+</script>
+<script src="/static/js/jquery.cookie.js"></script>
+<script src="/static/js/tournament_index.js"></script>
 {% endblock %}
