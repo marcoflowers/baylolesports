@@ -8,7 +8,7 @@
         <div class="col-md-2" value="0">
             <div class="team_pool" value="0">
                 {% for team in tournament.teams %}
-                    <div class="slot" draggable value={{get_ukey(team)}}><{{team.name}}</div>
+                    <div class="slot" draggable value={{to_ukey(team)}}>{{key_object(team).name}}</div>
                 {% endfor %}
                 {#% for num in range(16) %}
                     <div class="slot" draggable value="{{loop.index}}">Team {{loop.index}}</div>
@@ -79,7 +79,7 @@
                 </div>
             </div>
             <div id="save">
-                <button class="save" onclick="save()">Save</button><br>
+                <button class="save" name="save_bracket" onclick="save()">Save</button><br>
             </div>
         </div>
     </div>

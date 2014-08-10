@@ -3,6 +3,7 @@ import json
 from models.models import *
 from google.appengine.api import mail
 import cgi
+import unicodedata
 
 class index(BaseHandler):
     def get(self):
@@ -74,7 +75,12 @@ class new_team(BaseHandler):
     def post(self):
         user = users.get_current_user()
         team_id=cgi.escape(self.request.get("optionsRadios"))
+        # check team_id is one of the users team_ids
+        if team_id not in self.session['team_ids']:
+            return self.redirect('/team/new_team')
+        #create the team
         new_team_key=create_team_players(user, team_id)
+        #send email to the user
         message = mail.EmailMessage(sender="marco.flowers12@gmail.com",subject="Welcome to Baylolesports")
         message.to = user.email()
         message.body = """
@@ -88,10 +94,7 @@ class new_team(BaseHandler):
         message.send()
         self.redirect("/team/"+str(new_team_key.id()))
 
-class check_summoner_name(BaseHandler):
-    def get(self, name, position):
-        logging.info("check_summoner_name")
-        self.response.out.write(json.dumps({"id":get_sum_id(name), "position":position}));
+
 
 class get_team(BaseHandler):
     def get (self, type, input):
@@ -184,11 +187,14 @@ class get_more_teams(BaseHandler):
                 count=count+1
         logging.info(output)
         self.response.out.write(json.dumps(output))
+
+#For New_Team Page
 class return_list_of_teams(BaseHandler):
     def post(self):
         self.login()
         #get summoner name
-        name=json.loads(self.request.get("name"))
+        #name=json.loads(self.request.get("name"))
+        name=self.session.get('sum_name')
         if not self.user:
             self.redirect(get_login_url("/team/admin/"+id))
         #get summoner id
@@ -196,13 +202,31 @@ class return_list_of_teams(BaseHandler):
         #get list of teams
         teams = get_list_of_teams(summoner_id)
         #remove any that are already teams
+        team_ids=[]
         for teamo in teams:
             if(team.query(team.name==teamo["name"]).get()):
                 teams.remove(teamo)
+            else:
+                team_ids.append(teamo["id"])
+                logging.info(teamo["id"])
+        self.session['team_ids'] = team_ids
         self.response.out.write(json.dumps(teams))
 class check_rune(BaseHandler):
     def post(self):
-        name=self.request.get("sum_name")
+        name=self.session.get('sum_name')
         code=self.request.get("code")
         summoner_id=get_sum_id(name)
         self.response.out.write(json.dumps(check_rune_page(summoner_id, code)))
+class check_summoner_name(BaseHandler):
+    def get(self, name, position):
+        logging.info("check_summoner_name")
+        self.response.out.write(json.dumps({"id":get_sum_id(name), "position":position}));
+class set_session_sum_name(BaseHandler):
+    def post(self):
+        self.login()
+        sum_name=self.request.get("sum_name")
+        if not self.user:
+            self.redirect(get_login_url("/team/admin/"+id))
+        self.session['sum_name'] = sum_name
+        logging.info(self.session["sum_name"])
+        self.response.out.write(json.dumps("1"))

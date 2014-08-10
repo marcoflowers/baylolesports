@@ -29,10 +29,12 @@ class display_tournament(BaseHandler):
         self.render_template('/templates/tournament/display_%s.html' % tournament.size, template_values)
     def post(self, ukey):
         teams = self.request.get("join")
+        logging.info(teams)
         tournament = key_object(to_key(ukey))
-        for team in teams:
-            tournament.join_requests.append(to_key(team))
+        logging.info(tournament.join_requests)
+        tournament.join_requests=[to_key(teams)]
         tournament.put()
+        self.redirect("/tournament/"+ukey)
         
 
 class admin_page(BaseHandler):
@@ -45,8 +47,8 @@ class admin_page(BaseHandler):
         template_values['log'] = log
         self.render_template('/templates/tournament/admin_%s.html' % tournament.size, template_values)
 
-class post:
     def post(self, ukey):
+        logging.info("post")
         user = users.get_current_user()
         tournament = key_object(to_key(ukey))
         if(user not in tournament.admins):
@@ -64,11 +66,21 @@ class post:
             tournament.finalized = True
             tournament.put()
         elif self.request.get("join"):
-            pass
+            logging.info("yes")
+            for x in range(0,tournament.size-1):
+                team=self.request.get("join"+str(x))
+                logging.info(team)
+                if(team):
+                    logging.info("team")
+                    team_key=to_key(team)
+                    tournament.join_requests.remove(team_key)
+                    tournament.teams.append(team_key)
+                    tournament.put()
         elif self.request.get("settings"):
             pass
         elif self.request.get("results"):
             pass
+        self.redirect("/tournament/admin/"+ukey)
 
 class events:
     def __init__(self):

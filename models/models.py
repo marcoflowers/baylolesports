@@ -14,8 +14,11 @@ import httplib2
 from apiclient import discovery
 from oauth2client import client
 from google.appengine.api import memcache
+import ConfigParser
 
-
+config = ConfigParser.ConfigParser()
+config.readfp(open(r'models/api_key.pem'))
+api_key = config.get('My Section', 'api_key')
 
 class team_stat(ndb.Model):
     team=ndb.KeyProperty()
@@ -98,7 +101,8 @@ def get_ukey(object):
     return object.key.urlsafe()
 
 def to_key(ukey):
-    return ndb.Key(urlsafe=ukey)
+    key = ndb.Key(urlsafe=ukey)
+    return key
 def to_ukey(key):
     return key.urlsafe()
 
@@ -117,7 +121,6 @@ def keys_objects(keys):
     return json.dumps(objects)
 
 def get_sum_id(sum_name):
-    api_key="655fefc4-c614-420f-895c-893e2c8b9aee"
     #take out spaces and make lower case
     sum_name_unspaced = sum_name.replace(" ", "").lower()
     try:
@@ -198,7 +201,6 @@ def build_calendar_service():
     return service
 
 def get_list_of_teams(summoner_id):
-    api_key="655fefc4-c614-420f-895c-893e2c8b9aee"
     #query riot
     url = "https://na.api.pvp.net/api/lol/na/v2.3/team/by-summoner/"+str(summoner_id)+"?api_key="+api_key
     result = json.loads(urllib2.urlopen(url).read())
@@ -208,22 +210,45 @@ def get_list_of_teams(summoner_id):
     return output
     #return the summoner_id
 def get_team_by_id(team_id):
-    api_key="655fefc4-c614-420f-895c-893e2c8b9aee"
     #query riot
     url = "https://na.api.pvp.net/api/lol/na/v2.3/team/"+str(team_id)+"?api_key="+api_key
     result = json.loads(urllib2.urlopen(url).read())
     return result[str(team_id)]
 def get_player_by_id(player_id):
     
-    api_key="655fefc4-c614-420f-895c-893e2c8b9aee"
     #query riot
-    url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/"+str(player_id)+"?api_key="+api_key
-    result = json.loads(urllib2.urlopen(url).read())
+    for try_url in range(0,5):
+        try:
+            url = "https://na.api.pvp.net/api/lol/na/v1.4/summoner/"+str(player_id)+"?api_key="+api_key
+            result = json.loads(urllib2.urlopen(url).read())
+            break
+        except urllib2.URLError, e:
+            logging.info(e.code)
+            handle_riot_codes(e.code)
+            if e.code == "429":
+                logging.info("sleep")
+                time.sleep(5)
+            else:
+                return False
+        except:
+            return False
     return result[str(player_id)]
 def get_team_stats(team_id, team_key):
-    api_key="655fefc4-c614-420f-895c-893e2c8b9aee"
-    url = "https://na.api.pvp.net/api/lol/na/v2.4/league/by-team/"+str(team_id)+"/entry?api_key="+api_key
-    result = json.loads(urllib2.urlopen(url).read())
+    for try_url in range(0,5):
+        try:
+            url = "https://na.api.pvp.net/api/lol/na/v2.4/league/by-team/"+str(team_id)+"/entry?api_key="+api_key
+            result = json.loads(urllib2.urlopen(url).read())
+            break
+        except urllib2.URLError, e:
+            logging.info(e.code)
+            handle_riot_codes(e.code)
+            if e.code == "429":
+                logging.info("sleep")
+                time.sleep(5)
+            else:
+                return
+        except:
+            return
     results=result[team_id]
     for array in results:
         league_points=array["entries"][0]["leaguePoints"]
@@ -237,7 +262,6 @@ def get_team_stats(team_id, team_key):
         new_team_stats=team_stat(team=team_key,league_points=league_points,division=division,wins=wins,queue=queue)
         new_team_stats.put()
 def check_rune_page(summoner_id, string_check):
-    api_key="655fefc4-c614-420f-895c-893e2c8b9aee"
     url="https://na.api.pvp.net/api/lol/na/v1.4/summoner/"+str(summoner_id)+"/runes?api_key="+api_key
     result = json.loads(urllib2.urlopen(url).read())
     runes=result[str(summoner_id)]["pages"]
@@ -246,4 +270,20 @@ def check_rune_page(summoner_id, string_check):
         if(rune_page["name"]==string_check):
             check=True
     return check
+def handle_riot_codes(code):
+    if code=="400":
+        logging.info("bad request")
+    elif code=="401":
+        logging.info("Unauthorized")
+    elif code=="404":
+        logging.info("Not Found")
+    elif code=="429":
+        logging.info("Rate Limit Exceded")
+    elif code=="500":
+        logging.info("Internal Service Error")
+    elif code=="503":
+        logging.info("Service Unavailable")
+    else:
+        logging.info("unknown url error code")
+
 

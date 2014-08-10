@@ -8,7 +8,14 @@
   
 {% endblock %}
 
+{% block jumbo %}
+<div class="row bigblue" style="margin:0">
 
+<div class="col-md-6 col-md-offset-3 text-center">
+        <h2>{{tournament.name}} Admin Page</h2>
+</div>
+</div>
+{% endblock %}
 {% block content %}
 
 
@@ -29,16 +36,16 @@
 </ul>
 
 
-<div class="tab-content" style="border:1px solid">
+<div class="tab-content found_panel">
     {% if tournament.finalized != True %}
     <div class="tab-pane active" id="join">
         <form method="POST">
         {% for team in tournament.join_requests %}
-            <input type="checkbox" name="{{ get_ukey(team) }}">
-            <a href="/teams/{{ get_ukey(team) }}">{{ team.name }}</a>
+            <input type="checkbox" name="join{{loop.index0}}" value="{{to_ukey(team) }}">
+            <a href="/teams/{{ to_ukey(team) }}">{{ key_object(team).name }}</a>
             <br>
         {% endfor %}
-        <input type="submit" value="Add Teams">
+        <input type="submit" value="Add Teams" name="join">
         </form>
     </div>
     {% endif %}
@@ -52,7 +59,7 @@
                         <li style="overflow:hidden"><a href="#{{team}}" data-toggle="tab">Team {{team}}</a></li>
                     {% endfor %#}
                     {% for team in tournament.teams %}
-                        <li><a href="#{{ get_ukey(team) }}" data-toggle="tab">{{ team.name }}</a></li>
+                        <li><a href="#{{ to_ukey(team) }}" data-toggle="tab">{{ key_object(team).name }}</a></li>
                     {% endfor %}
             </div>
             <div class="col-md-9 tab-content">
@@ -61,26 +68,26 @@
                 </div>
                 {#% for team in range(1, size|int + 1) %#}
                 {% for team in tournament.teams %}
-                    <div class="tab-pane" id="{{ team }}" style="text-align:center">
-                        <h1>Team {{ team }}</h1>
+                    <div class="tab-pane" id="{{ to_ukey(team) }}" style="text-align:center">
+                        <h1>Team {{ key_object(team).name }}</h1>
                         <button class="contact_admin">
                             Contact Admin
                         </button>
-                        <button class="kick" onclick="kick({{team.key()}}">
+                        <button class="kick" onclick="kick({{team}}">
                             Kick Team
                         </button>
                         <div class="row">
                             <div class="col-md-2">
                                 <h5>Players</h5>
-                                {% for member in team.members %}
-                                    <a href="/player/{{ get_ukey(member)}}1">Player</a>
+                                {% for member in key_object(team).members %}
+                                    <a href="/player/{{ to_ukey(member)}}1">Player</a>
                                 {% endfor %}
                             </div>
                         </div>
                     </div>
                 {% endfor %}
                 {% for team in tournament.teams %}
-                    <div class="tab-pane" id="{{ get_ukey(team) }}">
+                    <div class="tab-pane" id="{{ to_ukey(team) }}">
                         <h1>{{ team.name }}</h1>
                         <button class="contact_admin">
                             Contact Admin

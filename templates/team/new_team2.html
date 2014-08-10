@@ -256,6 +256,12 @@ var summoner_name=""
 $( document ).ready(function() {
 	$("body").on("click","#sure",function(){
 		summoner_name = $("#player1").val();
+		$.ajax({
+	        url: '/team/set_session_sum_name', 
+	        type:'post',
+	        data:{"sum_name":summoner_name},
+	        dataType: 'json'
+	    })
 		code=makeid()
 		$("#1 input").hide()
 		$("#1 label").hide()
@@ -263,7 +269,7 @@ $( document ).ready(function() {
 		$("#auth_check").empty()
 		$("#auth_check").append("To validate that you are the actual owner of this account you must change 1 of your rune pages to this string<br>")
 		$("#auth_check").append("<code>"+code+"</code>")
-		$("#auth_check").append("<br>Once you have done that click this button")
+		$("#auth_check").append("<br>Once you have done that click this button(Usually takes 5-10 sec to work after you click save)")
 		$("#auth_check").append("<br><button class='btn btn-default' type='button'id='auth_rune'>Done</button>")
 
 	})
@@ -323,7 +329,7 @@ $( document ).ready(function() {
 	});
 	$( "#new_team" ).change(function() {
 		checkstatus()
-		if(loop>=1 && flag==false && ($('input[type=radio]:checked').size() > 0))
+		if(($('input[type=radio]:checked').size() > 0))
 		{
 			$("#team_submit").button('reset')
 		}

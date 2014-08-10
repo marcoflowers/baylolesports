@@ -5,9 +5,30 @@
 
 
 {% endblock %}
+{% block jumbo %}
+<div class="row bigblue" style="margin:0">
 
+<div class="col-md-6 col-md-offset-3 text-center">
+        <h1>{{tournament.name}}</h1>
+</div>
+</div>
+{% endblock %}
 {% block content %}
-
+<div class="col-md-3">
+    <div class="col-md-12 found_panel text-center">
+        Admin={{tournament.admin}}
+    </div>
+    <div class="col-md-12 found_panel text-center">
+        To join a tournament you must be the owner of a team.
+    </div>
+    <div class="col-md-12 found_panel text-center">
+        <h2>Teams</h2>
+        {% for team in tournament.teams %}
+            {{key_object(team).name}}<br>
+        {% endfor %}
+    </div>
+</div>
+<div class="col-md-9">
 <div id="content">
     <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
         <li class="active"><a href="#info" data-toggle="tab">Info</a></li>
@@ -50,6 +71,7 @@
         </div>
         {% endif %}
     </div>
+</div>
 </div>
 
 {% endblock %}

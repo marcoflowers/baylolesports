@@ -24,14 +24,23 @@ import httplib2
 import logging
 import os
 
+PRODUCTION_MODE = not os.environ.get(
+    'SERVER_SOFTWARE', 'Development').startswith('Development')
+if not PRODUCTION_MODE:
+    from google.appengine.tools.devappserver2.python import sandbox
+    sandbox._WHITE_LIST_C_MODULES += ['_ctypes', 'gestalt']
 # to allow service building, run appserver with this command:
 # python $gae/dev_appserver.py ~/projects/baylolesports/ --appidentity_email_address=64791344032-c65sddh2n9opu1peb8f2nlkr9rhsvr6e@developer.gserviceaccount.com --appidentity_private_key_path=/home/adrian/projects/baylolesports/models/private_key.pem
-
-
+#dev_appserver.py baylolesports2 --appidentity_email_address=64791344032-c65sddh2n9opu1peb8f2nlkr9rhsvr6e@developer.gserviceaccount.com --appidentity_private_key_path=baylolesports2/models/private_key.pem
+config = {}
+config['webapp2_extras.sessions'] = {
+    'secret_key': 'maqFDAFDSFS3132',
+}
 
 app = webapp2.WSGIApplication([
     ('/', home.index),
     ('/team/get_more_teams', team.get_more_teams),
+    ('/team/set_session_sum_name',team.set_session_sum_name),
     ('/team/check_rune', team.check_rune),
     ('/team/admin/(.*)', team.admin),
     ('/team/check_team_name/(.*)', team.check_team_name_handler),
@@ -47,7 +56,7 @@ app = webapp2.WSGIApplication([
     ('/tournament/check_name/(.*)', tournament.check_name),
     ('/tournament/new', tournament.new_tournament),
     ('/tournament/index', tournament.index),
-    ('/tournament/post/(.*)', tournament.post),
+    #('/tournament/post/(.*)', tournament.post),
     ('/tournament/admin/(.*)', tournament.admin_page),
     ('/tournament/(.*)', tournament.display_tournament),
-], debug=True)
+], debug=True, config=config)
