@@ -68,6 +68,7 @@ class tournament_descriptions(ndb.Model):
 
 class game(ndb.Model):
     round = ndb.IntegerProperty()
+    index=ndb.IntegerProperty()
     tournament = ndb.KeyProperty()
     teams = ndb.KeyProperty(repeated=True)
     happened = ndb.BooleanProperty()

@@ -72,15 +72,35 @@ $(document).ready(function() {
 
 
 function save() {
-    var slots = $("#slots .slot");
+    var slots = $("#tournslots .slot");
     data = {};
     [].forEach.call(slots, function(slot) {
         console.log($(slot).parents().attr("value"));
         console.log($(slot).text());
+        data[$(slot).parents().attr("value")]=$(slot).text()
     });
-    $.post(document.URL, data, function() {
-        console.log("Success");
-    });
+    data["bracket"]=true
+    console.log(document.URL)
+    //$.post(document.URL, data, function() {
+   //     console.log("Success");
+   // });
+    console.log(data)
+    console.log(JSON.stringify(data))
+    var string=""
+    for (var key in data) {
+        var obj = data[key];
+        string=string+key+"="+obj+"&"
+    }
+    string=string.substring(0,string.length-1)
+    console.log(string)
+    $.ajax({
+            url: document.URL, 
+            type:'post',
+            data:string,
+            success:function(data){
+                console.log("Success")
+            }
+    })
 }
 
 

@@ -69,6 +69,15 @@
 	</div>
 	<div class="col-md-12 found_panel text-center">
 		<h3>Tournaments</h3>
+		{% for tournament in tournaments %}
+			{{key_object(tournament["tournament"]).name}}
+			<br><br>
+			{% for game in tournament["games"] %}
+				{{key_object(game.teams[0]).name}} vs
+				{{key_object(game.teams[1]).name}}
+				<br>
+			{% endfor %}
+		{% endfor %}
 </div>
 </div>
 

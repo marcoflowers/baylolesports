@@ -53,11 +53,26 @@ class team_page(BaseHandler):
         else:
             admin=2
         logging.info(admin)
+
+        #get tournament games played in
+        games = game.query(game.teams==teamo.key)
+        tournaments=[]
+        for gameo in games:
+            check=False
+            for tournament in tournaments:
+                if(tournament["tournament"]==gameo.tournament):
+                    tournament["games"].append(gameo)
+                    check=True
+                    break
+            if(check==False):
+                tournaments.append({"tournament":gameo.tournament,"games":[gameo]})
+        logging.info(tournaments)
         template_values={
             "team":teamo,
             "div_urls":json.dumps(div_urls),
             "admin":admin,
-            "team_stats":team_stats
+            "team_stats":team_stats,
+            "tournaments":tournaments,
         }
 
         self.render_template('/templates/team/team_page.html', template_values)

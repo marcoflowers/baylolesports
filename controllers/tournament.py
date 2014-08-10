@@ -48,31 +48,44 @@ class admin_page(BaseHandler):
         self.render_template('/templates/tournament/admin_%s.html' % tournament.size, template_values)
 
     def post(self, ukey):
-        logging.info("post")
         user = users.get_current_user()
         tournament = key_object(to_key(ukey))
         if(user not in tournament.admins):
             self.redirect('/tournament/%s' % ukey)
-        if self.request.get("save_bracket"):
-            position = self.request.get("position").split("-")
-            game_number = int(position[0])
-            slot = int(position[1])
-            team = self.request.get("team")
-            game = tournament.games[game_number]
-            game.bracket_spot = game_number
-            game.teams[slot] = team
-            game.put()
+        if self.request.get("bracket"):
+            #for every sent data get the place and value
+            for field in (self.request.arguments()):
+                if(field=="bracket"):
+                    continue
+                value = self.request.get(field)
+                position = field.split("-")
+                game_number = int(position[0])
+                slot = int(position[1])
+                #only set the first round for teams
+                for rounds in tournament.rounds:
+                    if(rounds.round==1):
+                        roundo=rounds
+                #get the team based o its name
+                teamo=team.query(team.name==value).get()
+                team_key=teamo.key
+                #for each game in the round if that game has the right index number set the team at its slot
+                for games in roundo.games:
+                    if(key_object(games).index==game_number):
+                        key_object(games).teams[slot]=team_key
+                        logging.info(key_object(games))
+                        key_object(games).put()
+                logging.info("Swag")
         elif self.request.get("finalize_bracket"):
             tournament.finalized = True
             tournament.put()
         elif self.request.get("join"):
             logging.info("yes")
             for x in range(0,tournament.size-1):
-                team=self.request.get("join"+str(x))
+                teamo=self.request.get("join"+str(x))
                 logging.info(team)
                 if(team):
                     logging.info("team")
-                    team_key=to_key(team)
+                    team_key=to_key(teamo)
                     tournament.join_requests.remove(team_key)
                     tournament.teams.append(team_key)
                     tournament.put()
@@ -177,30 +190,30 @@ class new_tournament(BaseHandler):
 
         round1 = round(round=1, games=[])
         for num in range(0, size / 2):
-            round1.games.append(game(teams=teams, tournament=tournament_key).put())
+            round1.games.append(game(round=1,index=num,teams=teams, tournament=tournament_key).put())
         new_tournament.rounds.append(round1)
 
         round2 = round(round=2, games=[])
         for num in range(0, size / 4):
-            round2.games.append(game(teams=teams, tournament=tournament_key).put())
+            round2.games.append(game(round=2,index=num,teams=teams, tournament=tournament_key).put())
         new_tournament.rounds.append(round2)
 
         if(size / 8 > 0):
             round3 = round(round=3, games=[])
             for num in range(0, size / 8):
-                round3.games.append(game(teams=teams, tournament=tournament_key).put())
+                round3.games.append(game(round=3,index=num,teams=teams, tournament=tournament_key).put())
             new_tournament.rounds.append(round3)
 
         if(size / 16 > 0):
             round4 = round(round=4, games=[])
             for num in range(0, size / 16):
-                round4.games.append(game(teams=teams, tournament=tournament_key).put())
+                round4.games.append(game(round=4,index=num,teams=teams, tournament=tournament_key).put())
             new_tournament.rounds.append(round4)
 
         if(size / 32 > 0):
             round5 = round(round=5, games=[])
             for num in range(0, size / 32):
-                round5.games.append(game(teams=teams, tournament=tournament_key).put())
+                round5.games.append(game(round=5,index=num,teams=teams, tournament=tournament_key).put())
             new_tournament.rounds.append(round5)
 
 
