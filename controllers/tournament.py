@@ -158,10 +158,22 @@ class events:
 class index(BaseHandler):
     def get(self):
         self.login()
-        query = tournament.query(tournament.active==True).order(-tournament.created)
-        tournaments = query.fetch()
+        self.query = tournament.query(tournament.active==True).order(-tournament.created)
+        cursor = query.cursor()
         template_values = {"tournaments":tournaments}
         self.render_template('/templates/tournament/index.html', template_values) 
+
+    def post(self):
+        if(self.request.get('filters')):
+            filters = json.loads(self.request.get('filters'))
+            self.query = tournament.query(
+                    tournament.active==filters['active'],
+                    tournament.name==filters['name'],
+                    ).order(-tournament.created).fetch()
+            cursor = query.cursor()
+        else:
+            cursor = self.request.get('cursor');
+        tournaments = self.query.with_cursor(start_cursor=cursor)
 
 
 class new_tournament(BaseHandler):

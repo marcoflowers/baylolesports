@@ -9,16 +9,16 @@ import time
 from google.appengine.api import taskqueue
 import datetime
 from oauth2client.appengine import AppAssertionCredentials
-    
+import yaml    
 import httplib2
 from apiclient import discovery
 from oauth2client import client
 from google.appengine.api import memcache
 import ConfigParser
 
-config = ConfigParser.ConfigParser()
-config.readfp(open(r'models/api_key.pem'))
-api_key = config.get('My Section', 'api_key')
+#config = ConfigParser.ConfigParser()
+#config.readfp(open(r'models/api_key.pem'))
+#api_key = config.get('My Section', 'api_key')
 
 class team_stat(ndb.Model):
     team=ndb.KeyProperty()

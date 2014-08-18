@@ -24,6 +24,13 @@
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" value="" id="size" />
+                        Ongoing
+                    </label>
+                </div>
+
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="" id="size" />
                         Open Slots
                     </label>
                 </div>
@@ -80,6 +87,7 @@
         </div>
     </div>
 </div>
+<div id="loadmoreajaxloader"></div>
 {% endblock %}
 {% block scripts %}
 <script type="text/javascript">
@@ -89,6 +97,7 @@ window.create_dates = {
 {% endfor %}
 }
 </script>
+<script src="/static/js/jquery.infinitescroll.min.js"></script>
 <script src="/static/js/jquery.cookie.js"></script>
 <script src="/static/js/tournament_index.js"></script>
 {% endblock %}
