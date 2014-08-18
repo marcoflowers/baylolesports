@@ -111,7 +111,7 @@
         </div>
         <div class="col-md-10 tab-content">
             <div class="tab-pane active" id="calendar">
-                <!--iframe src="http://www.google.com/calendar/embed?src={{tournament.calendar}}" style="height:400;width:100%;"></iframe-->
+                <iframe style="width:100%;height:500px" src="https://www.google.com/calendar/embed?src={{tournament.calendar}}"></iframe>
             </div>
             {% for game in tournament.rounds[tournament.current_round - 1].games %}
                 {% if key_object(game).happened != True %}
@@ -171,9 +171,9 @@
 
 {% endblock %}
 {% block footer%}
-<script src="/static/js/drag_drop.js"></script>
-  <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-  <script src="/static/js/jquery-ui-timepicker-addon.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+    <script src="/static/js/jquery-ui-timepicker-addon.min.js"></script>
+    <script src="/static/js/tournament_admin.js"></script>
   
 <script type="text/javascript">
     $(document).ready(function(){

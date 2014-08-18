@@ -10,9 +10,9 @@
                 {% for team in tournament.teams %}
                     <div class="slot" draggable value={{to_ukey(team)}}>{{key_object(team).name}}</div>
                 {% endfor %}
-                {#% for num in range(16) %}
-                    <div class="slot" draggable value="{{loop.index}}">Team {{loop.index}}</div>
-                {% endfor %#}
+                {% for num in range(16 - len(tournament.teams)) %}
+                    <div class="slot" draggable value="-1">Placeholder</div>
+                {% endfor %}
             </div>
         </div>
         <div class="col-md-4" id="tournslots">

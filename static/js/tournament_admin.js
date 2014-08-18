@@ -1,4 +1,4 @@
-
+//---- start drag drop ----//
 function handleDragOver(e) {
     if (e.preventDefault) {
         e.preventDefault(); // Necessary. Allows us to drop.
@@ -57,8 +57,11 @@ function handleDrop(e) {
 
     return false;
 }
+
+//---- end drag drop ----//
+
+
 $(document).ready(function() {
-    console.log("Drag drop ready");
     var slots = $("#slots .slot");
     [].forEach.call(slots, function(slot) {
         slot.addEventListener('dragstart', handleDragStart, false);
@@ -69,6 +72,20 @@ $(document).ready(function() {
         slot.addEventListener('dragend', handleDragEnd, false);
     });
 });
+
+
+
+function post_event(ukey) {
+    var date = $('div.' + ukey).text();
+    var notifications = $('input.' + ukey).is('.checked');
+    var data = {
+        "date":date,
+        "notifications":notifications,
+    };
+    var url = document.URL.substring(document.URL.lastIndexOf('/'));
+    $.post('/tournament/schedule/' + ukey, data, function() {});
+}
+
 
 
 function save() {
@@ -104,3 +121,14 @@ function save() {
 }
 
 
+
+function save() {
+    var slots = $("#slots .slot");
+    data = {};
+    [].forEach.call(slots, function(slot) {
+        console.log($(slot).parents().attr("value"));
+        console.log($(slot).text());
+    });
+    $.post(document.URL, data, function() {
+    });
+}

@@ -8,9 +8,9 @@
             {% for team in tournament.teams %}
             <div class="slot" draggable value={{get_ukey(team)}}>{{team.name}}</div>
             {% endfor %}
-            {#% for team in range(32) %}
-            <div class="slot" value="{{team+1}}" draggable>Team {{team+1}}</div>
-            {% endfor %#}
+            {% for team in range(32 - len(tournament.teams)) %}
+            <div class="slot" value="-1" draggable>Placeholder</div>
+            {% endfor %}
             </div>
         </div>
         <div class="col-md-4">
