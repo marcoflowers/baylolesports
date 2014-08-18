@@ -48,7 +48,6 @@ class BaseHandler(webapp2.RequestHandler):
                     'get_ukey':get_ukey,
                     'key_object':key_object,
                     'to_ukey':to_ukey,
-<<<<<<< HEAD
             'to_id':to_id,
         }
         if user:
@@ -69,12 +68,3 @@ class BaseHandler(webapp2.RequestHandler):
         # Returns a session using the default cookie key.
         return self.session_store.get_session()
 
-
-        
-=======
-		    'to_id':to_id,
-                    'len':len,
-		}
-		if user:
-                    self.template_values["user"]=user
->>>>>>> tournaments
