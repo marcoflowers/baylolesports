@@ -19,7 +19,7 @@ from webob import Request
 from google.appengine.api import mail
 import logging
 import time
-from controllers import home, team, tournament, queue
+from controllers import home, team, tournament, queue, admin
 import httplib2
 import logging
 import os
@@ -49,4 +49,5 @@ app = webapp2.WSGIApplication([
     ('/tournament/post/(.*)', tournament.post),
     ('/tournament/admin/(.*)', tournament.admin_page),
     ('/tournament/(.*)', tournament.display_tournament),
+    ('/admin', admin.map),
 ], debug=True)
